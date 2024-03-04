@@ -14,17 +14,103 @@ Each formula is made of two parts:
         {O} could mean the statement - I work with NLP 
         {A} could mean the statement - Water bottles are heavy.  
 
+Note: 
+\u00ac represents the conjugate, or opposite of a statement 
+In this pattern -> (x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x)
+- This means for any x 
+(Ex) means there exists an x
+- where x is an abstract variable  
+
+There are three parts of each problem: 
+1. Hypothesis: This is what we are trying to prove. 
+2. Context: These are pieces of information we must use (or not use) to prove our hypothesis. 
+3. Proof: This is how we will combine the information from the context to prove our hypothesis.
+
 Here some section-by-section examples: 
+Predicates: 
+{B} = {variable} is new 
+Variables: 
+{bb} = {car}
 "hypothesis_formula": "{B}{bb}" 
 "hypothesis": "the car is new"
 
+Predicates: 
+{D} = Smartphones are intelligent
+Variables: 
+
 "hypothesis_formula": "{D}"
-"hypothesis": "
+"hypothesis": "Smartphones are intelligent"
 
+Predicates: 
+{C} = I love cookies
+Variables: 
 
+"hypothesis_formula": "\u00ac{C}"
+"hypothesis": "I do not love cookies" 
 
+Predicates: 
+{A} = {variable} is turned on
+{B} = {variable} is charged
+Variables: 
+{b} = smartphone
+{a} = laptop
+"context_formula": "sent1: \u00ac{B}{a} -> \u00ac(\u00ac{B}{b} & {A}{b})"
+"context": "If the laptop is not charged, then it is not true that (the smartphone is not charged and is turned on)."
 
+Predicates: 
+{B} = {variable} is written by a famous author 
+{A} = {variable} is available in the library 
 
+Variables: 
+{b} = book 
+{a} = pen
+"context_formula": sent1: \u00ac{A}{a} -> \u00ac(\u00ac{A}{b} & {B}{b})
+"context": "If the pen is not available in the library, then it is not true that (the book is not available in the library and the book is written by a famous author)"
+
+Predicates: 
+{AA} = {variable} has internet connectivity
+{AB} = {variable} has sufficient battery life 
+Variables: 
+x = electronic devices in general
+"context_formula": "sent3: (Ex): \u00ac(\u00ac{AA}x & \u00ac{AB}x)"
+"context": "There exists an electronic device that is not (without internet connectivity and without sufficient battery life)."
+
+Predicates:
+{AA} = {variable} is caffeinated
+{AB} = {variable} is served hot
+{A} = {variable} is preferred by the office
+Variables:
+{a} = coffee
+{x} = types of morning beverages (including coffee, tea, juice, etc.)
+"context_formula": "(x): \u00ac(\u00ac{AA}x & \u00ac{AB}x) -> \u00ac{A}{a}"
+"context": "For any type of morning beverage, if it is not true that the beverage is both non-caffeinated and served cold, then coffee is not the preferred beverage by the office."
+
+Predicates:
+{A} = needs sunlight to grow
+{N} = is watered regularly
+{BF} = is fertilized regularly
+Variables:
+{x} = types of plants (including flowers, vegetables, trees, etc.)
+"context_formula": "sent6: (x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x)"
+"context": "For every type of plant, if it needs sunlight to grow, then it cannot be that it is neither watered regularly nor fertilized regularly."
+
+Predicates: 
+{AA}: Burgers are healthy 
+{AB}: Hotdogs are yummy
+Variables: 
+
+Below are two examples of proofs. Generate the proofs by looking at the proofs formula and translating the deductions into real world syntax. 
+
+"proofs_formula": "sent7 & assump1 -> int1: \u00ac({AA} & \u00ac{AB})"
+"proof": "sent7 & assump1 -> int1: Burgers are not healthy and hotdogs are not yummy."
+
+Predicates: 
+{A}: Pokemon are friends
+
+"proofs_formula": "void -> assump1: \u00ac{A}"
+"proof": "void -> assump1: Pokemon are not friends" 
+------
+Now, here are some full examples of logic syntax transformed into real problems: 
 
 Template: 
 "hypothesis_formula": "{B}{bb}"            
@@ -37,14 +123,13 @@ Output:
 "proofs_formula": ["sent2 & sent1 -> int1: the car is new; int1 -> hypothesis;"].  
 
 Variables: 
-1. {bb} = car 
-2. {aa} = wheel 
+{bb} = car 
+{aa} = wheel 
 
 Predicates: 
-1. {B} = {variable} is new 
-2. {AA} = {variable} is flat 
+{B} = {variable} is new 
+{AA} = {variable} is flat 
 
-------
 Template: 
 "hypothesis_formula": "{D}{b}"
 "context_formula": "sent1: {AD}{ab} sent2: (\u00ac{A}{b} & {C}{b}) -> {D}{b} sent3: (x): \u00ac(\u00ac{AA}x v \u00ac{AB}x) -> \u00ac{A}{b} sent4: {B}{a} sent5: (\u00ac{AA}{a} v \u00ac{AB}{a}) -> \u00ac{B}{a} sent6: {C}{b}"
@@ -58,18 +143,18 @@ Output:
 "proof_label": "PROVED"
 
 Variables: 
-1. {b} = goldfish
-2. {ab} = three-pointers
-3. {a} = water
+{b} = goldfish
+{ab} = three-pointers
+{a} = water
 
 Predicates: 
-1. {D} = Matcha loves {variable}
-2. {AD} = Michael shoots {variable} 
-3. {A} = Cows eat {variable} 
-4. {C} = Dumbledorf feeds {variable} 
-5. {AA} = Swedish Fish read {variable}
-6. {AB} = Cats claw {variable}
-7. {B} = Rice needs {variable}
+{D} = Matcha loves {variable}
+{AD} = Michael shoots {variable} 
+{A} = Cows eat {variable} 
+{C} = Dumbledorf feeds {variable} 
+{AA} = Swedish Fish read {variable}
+{AB} = Cats claw {variable}
+{B} = Rice needs {variable}
 
 "hypothesis_formula": "({A} & {C})"
 "context_formula": "sent1: \u00ac{DN} sent2: \u00ac{B} sent3: (\u00ac{A} & {B}) -> \u00ac{DD} sent4: {C} sent5: \u00ac{JI} -> \u00ac({AJ} & {GF}) sent6: \u00ac({AA} & \u00ac{AB}) -> {B} sent7: \u00ac{A} -> \u00ac({AA} & \u00ac{AB}) sent8: {DH} sent9: {AS}"
@@ -95,47 +180,10 @@ Output:
 {DH}: garden areas are maintained 
 {AS}: emergency exits are accessible 
 ------
-Template: Give the following problem a unique real world meaning. 
+Template: Give the following problem a unique real world meaning. Make sure to follow the EXACT syntax as the examples above, including the proofs section, where you should generate something that looks like: "void -> assump1: _____"
 "hypothesis_formula": "(\u00ac{A}{b} & {B}{b})"
-"context_formula": "sent1: \u00ac{B}{a} -> \u00ac(\u00ac{B}{b} & {A}{b}) sent2: \u00ac{A}{a} -> \u00ac(\u00ac{A}{b} & {B}{b}) sent3: (Ex): \u00ac(\u00ac{AA}x & \u00ac{AB}x) sent4: (x): \u00ac(\u00ac{AA}x & \u00ac{AB}x) -> \u00ac{A}{a} sent5: \u00ac{A}{b} -> \u00ac({A}{a} & {B}{a}) sent6: (x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x) sent7: \u00ac({A}{b} & {B}{b}) sent8: (Ex): \u00ac({A}x & \u00ac{B}x)", "proofs": ["sent3 & sent4 -> int1: the dicamptodon is not a kind of a rapporteur.; sent2 & int1 -> hypothesis;"]
+"context_formula": "sent1: \u00ac{B}{a} -> \u00ac(\u00ac{B}{b} & {A}{b}) sent2: \u00ac{A}{a} -> \u00ac(\u00ac{A}{b} & {B}{b}) sent3: (Ex): \u00ac(\u00ac{AA}x & \u00ac{AB}x) sent4: (x): \u00ac(\u00ac{AA}x & \u00ac{AB}x) -> \u00ac{A}{a} sent5: \u00ac{A}{b} -> \u00ac({A}{a} & {B}{a}) sent6: (x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x) sent7: \u00ac({A}{b} & {B}{b}) sent8: (Ex): \u00ac({A}x & \u00ac{B}x)", 
 "proofs_formula": ["sent3 & sent4 -> int1: \u00ac{A}{a}; sent2 & int1 -> hypothesis;"]
 "proof_label": "DISPROVED"
 
 Output: 
-
-
-For this problem, let's assign real-world meanings to each variable and predicate as follows:
-
-Variables:
-
-{b} = smartphone
-{a} = laptop
-{x} = electronic devices in general
-Predicates:
-
-{A} = is turned on
-{B} = is charged
-{AA} = has internet connectivity
-{AB} = has sufficient battery life
-{N} = is in silent mode
-{BF} = is in airplane mode
-Now, let's translate the given template into a real-world context with these assignments:
-
-"Hypothesis": "(The smartphone is not turned on and is charged)."
-
-"Context":
-
-"If the laptop is not charged, then it is not true that (the smartphone is not charged and is turned on)."
-"If the laptop is not turned on, then it is not true that (the smartphone is not turned on and is charged)."
-"There exists an electronic device that is not (without internet connectivity and without sufficient battery life)."
-"For every electronic device, if it is not (without internet connectivity and without sufficient battery life), then the laptop is not turned on."
-"If the smartphone is not turned on, then it is not true that (the laptop is turned on and is charged)."
-"For every electronic device, if it is turned on, then it is not (in silent mode and in airplane mode)."
-sent6: (x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x)
-
-"It is not true that (the smartphone is turned on and is charged)."
-"There exists an electronic device that is not (turned on and not charged)."
-Proofs:
-
-"The existence of an electronic device that is not without internet connectivity and without sufficient battery life, and the fact that every electronic device meeting these conditions implies the laptop is not turned on, leads to the conclusion that the laptop is not a kind of a device that needs to be turned on for the hypothesis that the smartphone is not turned on and is charged to be disproved."
-
