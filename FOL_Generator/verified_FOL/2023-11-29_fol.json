@@ -1,0 +1,51 @@
+[
+    {
+        "id": "49780b89-f61a-4271-8b6c-b5643b6ffcb6",
+        "nl_premises": [
+            "Penguins are birds.",
+            "Penguins do not fly.",
+            "If a bird can fly, it has wings."
+        ],
+        "fol_premises": [
+            "\u2200x (Penguin(x) \u2192 Bird(x))",
+            "\u2200x (Penguin(x) \u2192 \u00acFly(x))",
+            "\u2200x ((Bird(x) \u2227 Fly(x)) \u2192 HasWings(x))"
+        ],
+        "nl_query": "Penguins have wings.",
+        "fol_query": "\u2200x (Penguin(x) \u2192 HasWings(x))",
+        "label": false,
+        "predicates": [
+            "HasWings(x)",
+            "Penguin(x)",
+            "Bird(x)",
+            "Fly(x)"
+        ],
+        "z3_program": "from z3 import *\n\n\n_Object = DeclareSort('Object')\nx = Const('x', _Object)\n\n\n\n\nHasWings = Function('HasWings', _Object, BoolSort())\nPenguin = Function('Penguin', _Object, BoolSort())\nBird = Function('Bird', _Object, BoolSort())\nFly = Function('Fly', _Object, BoolSort())\n\n\nclauses = []\nclauses.append(ForAll([x], Implies(Penguin(x), Bird(x))))\nclauses.append(ForAll([x], Implies(Penguin(x), Not(Fly(x)))))\nclauses.append(ForAll([x], Implies(And(Bird(x), Fly(x)), HasWings(x))))\n\n\nconclusion = ForAll([x], Implies(Penguin(x), HasWings(x)))\n\n\ndef is_valid(clauses, conclusion):\n\tsolver = Solver()\n\tsolver.add(clauses)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\n\nans = is_valid(clauses, conclusion)"
+    },
+    {
+        "id": "334fbce8-b2d2-4ff9-ac71-52562d0a64ca",
+        "nl_premises": [
+            "Elephants are mammals.",
+            "Elephants are herbivores.",
+            "Lions are mammals.",
+            "Lions are carnivores."
+        ],
+        "fol_premises": [
+            "\u2200x (Elephant(x) \u2192 Mammal(x))",
+            "\u2200x (Elephant(x) \u2192 Herbivore(x))",
+            "\u2200x (Lion(x) \u2192 Mammal(x))",
+            "\u2200x (Lion(x) \u2192 Carnivore(x))"
+        ],
+        "nl_query": "An elephant can be a carnivore.",
+        "fol_query": "\u2203x (Elephant(x) \u2227 Carnivore(x))",
+        "label": false,
+        "predicates": [
+            "Elephant(x)",
+            "Herbivore(x)",
+            "Carnivore(x)",
+            "Lion(x)",
+            "Mammal(x)"
+        ],
+        "z3_program": "from z3 import *\n\n\n_Object = DeclareSort('Object')\nx = Const('x', _Object)\n\n\n\n\nElephant = Function('Elephant', _Object, BoolSort())\nHerbivore = Function('Herbivore', _Object, BoolSort())\nCarnivore = Function('Carnivore', _Object, BoolSort())\nLion = Function('Lion', _Object, BoolSort())\nMammal = Function('Mammal', _Object, BoolSort())\n\n\nclauses = []\nclauses.append(ForAll([x], Implies(Elephant(x), Mammal(x))))\nclauses.append(ForAll([x], Implies(Elephant(x), Herbivore(x))))\nclauses.append(ForAll([x], Implies(Lion(x), Mammal(x))))\nclauses.append(ForAll([x], Implies(Lion(x), Carnivore(x))))\n\n\nconclusion = Exists([x], And(Elephant(x), Carnivore(x)))\n\n\ndef is_valid(clauses, conclusion):\n\tsolver = Solver()\n\tsolver.add(clauses)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\n\nans = is_valid(clauses, conclusion)"
+    }
+]

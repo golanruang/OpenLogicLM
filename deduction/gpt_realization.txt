@@ -1,0 +1,141 @@
+Task: given a formula for a deductive reasoning problem, realize the problem by giving every variable and predicate a unique real world meaning. Maintain the original logic of the formula. Do NOT give multiple variables or predicates the same meaning.
+Each formula is made of two parts: 
+1. Variables - Variables are represented by lower case letters surrounded by brackets, such as {aa}, {a}, {b}, or {c}.
+    - Variables are real-world objects, such as wands, computers, or play-dough. 
+2. Predicates are represented by upper case letters such as {A}, {B}, {AB}, or {BD}. For predicates, there are two cases: 
+    a) The predicate describes a variable. This occurs when a variable immediately follows a predicate, like {AA}{a}, {AB}{c}, {DF}{s}, or {LS}{y}. In this case, the predicate will describe the variable. 
+    For example: 
+        {AA}{a} could mean the frog is red, where {AA} describes a variable as red, and {a} is a frog. 
+        {AB}{c} could mean the wand is shattered, where {AB} describes a variable as shattered, and {c} is a wand.
+        {DF}{s} could mean the Logan craves candy, where {DF} describes a variable as something Logan craves, and {s} is a candy.
+    b) The predicate is a statement. This occurs when a variable does not follow a predicate, like {AA}, {AB}, {DF}, or {LS}. In this case, the predicate will be a statement. 
+    For example: 
+        {CD} could mean the statement - Doug likes green apples.
+        {O} could mean the statement - I work with NLP 
+        {A} could mean the statement - Water bottles are heavy.  
+
+Here some section-by-section examples: 
+"hypothesis_formula": "{B}{bb}" 
+"hypothesis": "the car is new"
+
+"hypothesis_formula": "{D}"
+"hypothesis": "
+
+
+
+
+
+
+Template: 
+"hypothesis_formula": "{B}{bb}"            
+"context_formula:": "sent1: \u00ac{AA}{aa} -> {B}{bb} sent2: \u00ac{AA}{aa}"
+"proofs_formula: ["sent2 & sent1 -> int1: {B}{bb}; int1 -> hypothesis;"].
+
+Output: 
+"hypothesis": "the car is new."
+"context": "sent1: if the wheels are not flat, the car is new sent2: the wheels are not flat".
+"proofs_formula": ["sent2 & sent1 -> int1: the car is new; int1 -> hypothesis;"].  
+
+Variables: 
+1. {bb} = car 
+2. {aa} = wheel 
+
+Predicates: 
+1. {B} = {variable} is new 
+2. {AA} = {variable} is flat 
+
+------
+Template: 
+"hypothesis_formula": "{D}{b}"
+"context_formula": "sent1: {AD}{ab} sent2: (\u00ac{A}{b} & {C}{b}) -> {D}{b} sent3: (x): \u00ac(\u00ac{AA}x v \u00ac{AB}x) -> \u00ac{A}{b} sent4: {B}{a} sent5: (\u00ac{AA}{a} v \u00ac{AB}{a}) -> \u00ac{B}{a} sent6: {C}{b}"
+"proofs_formula": ["void -> assump1: (\u00ac{AA}{a} v \u00ac{AB}{a}); sent5 & assump1 -> int1: \u00ac{B}{a}; int1 & sent4 -> int2: #F#; [assump1] & int2 -> int3: \u00ac(\u00ac{AA}{a} v \u00ac{AB}{a}); int3 -> int4: (Ex): \u00ac(\u00ac{AA}x v \u00ac{AB}x); int4 & sent3 -> int5: \u00ac{A}{b}; int5 & sent6 -> int6: (\u00ac{A}{b} & {C}{b}); int6 & sent2 -> hypothesis;"]
+"proof_label": "PROVED"
+
+Output: 
+"hypothesis": "Matcha loves XTRA Cheddar Goldfish."
+"context_formula": "sent1: Michael shoots three-pointers. sent2: If cows do not eat goldfish and Dumbledorf does feed goldfish, Matcha loves goldfish. sent3: For any object x, if it is not true that Swedish Fish do not read x and cats do not claw x, this means that cows do not eat goldfish. sent4: Rice needs water. sent5: If Swedish Fish do not read water and cats do not claw water, Rice does not need water. sent6: Dumbledorf feeds goldfish.
+"proofs": ["void -> assump1: Swedish fish do not read water and cat do not claw water; sent5 & assump1 -> int1: Rice does not need water; int1 & sent4 -> int2: #F#; [assump1] & int2 -> int3: It is not true that Swedish Fish do not read water and cats do not claw water; int3 -> int4: There exists an x such that it is not true that Swedish fish read x and cats claw x; int4 & sent3 -> int5: Cows do not eat goldfish; int5 & sent6 -> int6: Cows do not eat goldfish and Dumbledorf feeds goldfish; int6 & sent2 -> hypothesis;"] 
+"proof_label": "PROVED"
+
+Variables: 
+1. {b} = goldfish
+2. {ab} = three-pointers
+3. {a} = water
+
+Predicates: 
+1. {D} = Matcha loves {variable}
+2. {AD} = Michael shoots {variable} 
+3. {A} = Cows eat {variable} 
+4. {C} = Dumbledorf feeds {variable} 
+5. {AA} = Swedish Fish read {variable}
+6. {AB} = Cats claw {variable}
+7. {B} = Rice needs {variable}
+
+"hypothesis_formula": "({A} & {C})"
+"context_formula": "sent1: \u00ac{DN} sent2: \u00ac{B} sent3: (\u00ac{A} & {B}) -> \u00ac{DD} sent4: {C} sent5: \u00ac{JI} -> \u00ac({AJ} & {GF}) sent6: \u00ac({AA} & \u00ac{AB}) -> {B} sent7: \u00ac{A} -> \u00ac({AA} & \u00ac{AB}) sent8: {DH} sent9: {AS}"
+"proofs_formula": ["void -> assump1: \u00ac{A}; sent7 & assump1 -> int1: \u00ac({AA} & \u00ac{AB}); int1 & sent6 -> int2: {B}; int2 & sent2 -> int3: #F#; [assump1] & int3 -> int4: {A}; int4 & sent4 -> hypothesis;"]
+"proof_label": "PROVED"
+
+Output:
+"hypothesis": "The city park is open and the lighting system is functional.",
+"context": "sent1: The gate is not locked. sent2: The walkways are not cleared. sent3: If the park is not open and the walkways are cleared, then the fountains are not working. sent4: The lighting system is functional. sent5: If the night patrol is not active, it means that the safety measures and the visibility are not adequate. sent6: If the recreational areas are not accessible and the night patrol is active, the walkways are cleared. sent7: If the park is not open, it means that the recreational areas are not accessible and the night patrol is active. sent8: The garden areas are maintained. sent9: The emergency exits are accessible.",
+"proofs": ["void -> assump1: The park is not open; sent7 & assump1 -> int1: The recreational areas are not accessible and the night patrol is active; int1 & sent6 -> int2: The walkways are cleared; int2 & sent2 -> int3: #F#; [assump1] & int3 -> int4: The park is open; int4 & sent4 -> hypothesis;"]
+"proof_label": "PROVED"
+
+{A}: city park is open
+{C}: lighting system is functional 
+{DN}: gate is locked 
+{B}: walkways are cleared 
+{DD}: fountains are working 
+{JI}: night patrol is active 
+{AJ}: safety measures are active 
+{GF}: visibility is adequate 
+{AA}: Recreation areas are accessible 
+{AB}: night patrol is active 
+{DH}: garden areas are maintained 
+{AS}: emergency exits are accessible 
+------
+Template: Give the following problem a unique real world meaning. 
+"hypothesis_formula": "(\u00ac{A}{b} & {B}{b})"
+"context_formula": "sent1: \u00ac{B}{a} -> \u00ac(\u00ac{B}{b} & {A}{b}) sent2: \u00ac{A}{a} -> \u00ac(\u00ac{A}{b} & {B}{b}) sent3: (Ex): \u00ac(\u00ac{AA}x & \u00ac{AB}x) sent4: (x): \u00ac(\u00ac{AA}x & \u00ac{AB}x) -> \u00ac{A}{a} sent5: \u00ac{A}{b} -> \u00ac({A}{a} & {B}{a}) sent6: (x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x) sent7: \u00ac({A}{b} & {B}{b}) sent8: (Ex): \u00ac({A}x & \u00ac{B}x)", "proofs": ["sent3 & sent4 -> int1: the dicamptodon is not a kind of a rapporteur.; sent2 & int1 -> hypothesis;"]
+"proofs_formula": ["sent3 & sent4 -> int1: \u00ac{A}{a}; sent2 & int1 -> hypothesis;"]
+"proof_label": "DISPROVED"
+
+Output: 
+
+
+For this problem, let's assign real-world meanings to each variable and predicate as follows:
+
+Variables:
+
+{b} = smartphone
+{a} = laptop
+{x} = electronic devices in general
+Predicates:
+
+{A} = is turned on
+{B} = is charged
+{AA} = has internet connectivity
+{AB} = has sufficient battery life
+{N} = is in silent mode
+{BF} = is in airplane mode
+Now, let's translate the given template into a real-world context with these assignments:
+
+"Hypothesis": "(The smartphone is not turned on and is charged)."
+
+"Context":
+
+"If the laptop is not charged, then it is not true that (the smartphone is not charged and is turned on)."
+"If the laptop is not turned on, then it is not true that (the smartphone is not turned on and is charged)."
+"There exists an electronic device that is not (without internet connectivity and without sufficient battery life)."
+"For every electronic device, if it is not (without internet connectivity and without sufficient battery life), then the laptop is not turned on."
+"If the smartphone is not turned on, then it is not true that (the laptop is turned on and is charged)."
+"For every electronic device, if it is turned on, then it is not (in silent mode and in airplane mode)."
+sent6: (x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x)
+
+"It is not true that (the smartphone is turned on and is charged)."
+"There exists an electronic device that is not (turned on and not charged)."
+Proofs:
+
+"The existence of an electronic device that is not without internet connectivity and without sufficient battery life, and the fact that every electronic device meeting these conditions implies the laptop is not turned on, leads to the conclusion that the laptop is not a kind of a device that needs to be turned on for the hypothesis that the smartphone is not turned on and is charged to be disproved."
+

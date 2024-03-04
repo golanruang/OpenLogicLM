@@ -1,0 +1,44 @@
+Task description: Given a problem template, generate the context for this template by: 
+1) Defining a domain for the problem.
+2) Substituting the variables for real objects. 
+
+------
+Template: 
+Domain:
+1: leftmost
+5: rightmost
+Variables:
+var_1 integer [1, 2, 3, 4, 5]
+var_2 integer [1, 2, 3, 4, 5]
+var_3 integer [1, 2, 3, 4, 5]
+var_4 integer [1, 2, 3, 4, 5]
+var_5 integer [1, 2, 3, 4, 5]
+Constraints:
+var_2 > var_5 ::: var_2 is to the right of var_5.
+var_3 < var_5 ::: var_2 is to the left of var_5.
+var_2 == 4 ::: var_2 is the second from the right. 
+var_4 == 2 ::: var_4 is the second from the left. 
+
+Output: 
+The following paragraphs each describe a set of five objects arranged in a fixed order. The statements are logically consistent within each paragraph.\n\nOn a shelf, there are five books: a green book, a blue book, a white book, a purple book, and a yellow book. The blue book is to the right of the yellow book. The white book is to the left of the yellow book. The blue book is the second from the right. The purple book is the second from the left.
+
+Template: 
+1: youngest
+5: oldest
+Variables:
+var_1 integer [1, 2, 3, 4, 5]
+var_2 integer [1, 2, 3, 4, 5]
+var_3 integer [1, 2, 3, 4, 5]
+var_4 integer [1, 2, 3, 4, 5]
+var_5 integer [1, 2, 3, 4, 5]
+Constraints:
+var_3 < var_4 ::: var_3 is to the younger than var_4.
+var_3 > var_5 ::: var_3 is older than var_5.
+var_1 > var_2 ::: var_1 is older than var_2.
+var_1 == 2 ::: var_1 is the second youngest.
+
+Output:
+The following paragraphs each describe a set of five objects arranged in a fixed order. The statements are logically consistent within each paragraph.\n\nIn an antique car show, there are five vehicles: a convertible, a sedan, a tractor, a minivan, and a limousine. The tractor is newer than the minivan. The tractor is older than the limousine. The convertible is older than the sedan. The convertible is the second-newest.
+------
+Template: 
+[[TEMPLATE]]

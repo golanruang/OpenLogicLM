@@ -1,0 +1,29 @@
+Task description: Given a seed sentence and its first-order-logic (FOL) representation, generate a complete logical reasoning problem by:
+1) introducing a few more sentences and their FOL forms.
+2) generating a conclusion to be proved or disproved, together with its FOL form.
+3) giving the label of the conclusion. (TRUE, FALSE, or UNKNOWN)
+------
+Seed sentence:
+Miroslav Venhoda was a Czech choral conductor who specialized in the performance of Renaissance and Baroque music.
+Seed FOL:
+Czech(miroslav) \u2227 ChoralConductor(miroslav) \u2227 Specialize(miroslav, renaissance) \u2227 Specialize(miroslav, baroque)
+###
+Sentence: Any choral conductor is a musician.
+FOL: \u2200x (ChoralConductor(x) \u2192 Musician(x))
+
+Sentence: Some musicians love music.
+FOL: \u2203x (Musician(x) \u2192 Love(x, music))
+
+Sentence: Miroslav Venhoda published a book in 1946 called Method of Studying Gregorian Chant.
+FOL: Book(methodOfStudyingGregorianChant) \u2227 Author(miroslav, methodOfStudyingGregorianChant) \u2227 Publish(methodOfStudyingGregorianChant, year1946)
+
+Query: A Czech person wrote a book in 1946.
+FOL: \u2203x \u2203y (Czech(x) \u2227 Book(y) \u2227 Author(x, y) \u2227 Publish(y, year1946))
+
+Label: TRUE
+------
+Seed sentence:
+[[SEED_SENTENCE]]
+Seed FOL:
+[[SEED_FOL]]
+###
