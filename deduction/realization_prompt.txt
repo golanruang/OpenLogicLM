@@ -1,0 +1,11 @@
+This problem is about a local library's operations and services.
+{A} = library is open to the public
+{C} = book lending service is available
+{DN} = online catalog is accessible
+{B} = reading areas are organized
+{DD} = community events are scheduled
+¬{A} = library is closed to the public
+¬{C} = book lending service is not available
+¬{DN} = online catalog is not accessible
+
+Given a situation and a set of variables with 

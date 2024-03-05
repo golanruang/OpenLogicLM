@@ -1,0 +1,65 @@
+Task: 
+1. Generate a real-world situation. 
+2. Given a set of variables, variable conjugates, and predicates, assign each an interpretation related to the generated situation. 
+    - By conjugate, I mean variables with a \u00ac in front. \u00ac{A} means the conjugate of {A}. \u00ac{B}{cc} means the conjugate of {B}{cc}. 
+
+Variables - Variables are represented by lower case letters surrounded by brackets, such as {aa}, {a}, {b}, or {c}.
+Predicates - Predicates are represented by upper case letters such as {A}, {B}, {AB}, or {BD}. 
+
+There are two types of formulations. 
+a) Predicate + variable. When the input consists of predicates and variables, the variables are nouns and the predicate acts as a descriptor. 
+        {AA} = {variable} is large. 
+        {ab} = {desk}
+        When combined, the predicate ({AA}) will describe the variable ({ab}): {AA}{ab} = The desk is large. 
+    When we see the variable x (not surrounded by curly braces), x is a general noun. 
+        x = types of plants (including flowers, vegetables, trees, etc.)
+
+b) {Predicate}. In this formulation, the predicate is a statement. 
+    {AA} = Dylan likes pies. 
+
+Here are two examples: 
+------
+Input: 
+{D}, {AD}, \u00ac{AD}, {A}, {C}, \u00ac{C}, {AA}, {AB}, {B}
+
+Output: 
+Situation: This problem is about a city park and its lighting system. 
+{D} = city park is open 
+{AD} = lighting system is functional 
+\u00ac{AD} = lighting system is not functional 
+{A} = gate is locked 
+{C} = night patrol is active 
+\u00ac{C} = night patrol is not active 
+{AA} = garden areas are maintained
+{AB} = emergency exits are accessible 
+{B} = walkways are cleared 
+
+Input: 
+{a}, {b}, x, {AA}, {AB}, {A}, \u00ac{AA}, \u00ac{AB}
+
+Output: 
+Situation: This problem is about morning beverages. 
+{a} = coffee
+{b} = orange juice
+x = types of morning beverages (including coffee, tea, juice, etc.)
+{AA} = {variable} is caffeinated
+{AB} = {variable} is served hot
+{A} = {variable} is preferred by the office
+\u00ac{AA} = {variable} is not caffeinated
+\u00ac{AB} = {variable} is not served hot 
+
+Input: 
+{n}, {z}, x, {ZZ}, {CN}, {CN}
+
+Output: 
+Situation: This problem is about a public library and its services.
+{n} = online catalog
+{z} = study rooms
+x = types of library services (including borrowing books, using study rooms, online resources, etc.)
+{ZZ} = {variable} is available online
+{CN} = {variable} is reserved
+------
+Input: 
+[[TEMPLATE]]
+
+Output:

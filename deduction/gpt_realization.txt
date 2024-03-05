@@ -12,7 +12,7 @@ Each formula is made of two parts:
     For example: 
         {CD} could mean the statement - Doug likes green apples.
         {O} could mean the statement - I work with NLP 
-        {A} could mean the statement - Water bottles are heavy.  
+        {A} could mean the statement - Water bottles are heavy. 
 
 Note: 
 \u00ac represents the conjugate, or opposite of a statement 
@@ -187,3 +187,45 @@ Template: Give the following problem a unique real world meaning. Make sure to f
 "proof_label": "DISPROVED"
 
 Output: 
+
+
+"hypothesis_formula": "(\u00ac{A}{b} & {B}{b})"
+"context_formula": "sent1: \u00ac{B}{a} -> \u00ac(\u00ac{B}{b} & {A}{b}) sent2: \u00ac{A}{a} -> \u00ac(\u00ac{A}{b} & {B}{b}) sent3: (Ex): \u00ac(\u00ac{AA}x & \u00ac{AB}x) sent4: (x): \u00ac(\u00ac{AA}x & \u00ac{AB}x) -> \u00ac{A}{a} sent5: \u00ac{A}{b} -> \u00ac({A}{a} & {B}{a}) sent6: (x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x) sent7: \u00ac({A}{b} & {B}{b}) sent8: (Ex): \u00ac({A}x & \u00ac{B}x)", "proofs": ["sent3 & sent4 -> int1: the dicamptodon is not a kind of a rapporteur.; sent2 & int1 -> hypothesis;"]
+"proofs_formula": ["sent3 & sent4 -> int1: \u00ac{A}{a}; sent2 & int1 -> hypothesis;"]
+"proof_label": "DISPROVED"
+
+
+
+For this problem, let's assign real-world meanings to each variable and predicate as follows:
+
+Variables:
+
+{b} = smartphone
+{a} = laptop
+{x} = electronic devices in general
+Predicates:
+
+{A} = is turned on
+\u00ac{A} = 
+{B} = is charged
+{AA} = has internet connectivity
+{AB} = has sufficient battery life
+{N} = is in silent mode
+{BF} = is in airplane mode
+Now, let's translate the given template into a real-world context with these assignments:
+
+
+(x): {A}x -> \u00ac(\u00ac{N}x & \u00ac{BF}x)
+"For every electronic device, if it is turned on, then it is not (in silent mode and in airplane mode)."
+
+"Hypothesis": "(The smartphone is not turned on and is charged)."
+
+"Context":
+"If the laptop is not charged, then it is not true that (the smartphone is not charged and is turned on)."
+"If the laptop is not turned on, then it is not true that (the smartphone is not turned on and is charged)."
+"There exists an electronic device that is not (without internet connectivity and without sufficient battery life)."
+"For every electronic device, if it is not (without internet connectivity and without sufficient battery life), then the laptop is not turned on."
+"If the smartphone is not turned on, then it is not true that (the laptop is turned on and is charged)."
+"For every electronic device, if it is turned on, then it is not (in silent mode and in airplane mode)."
+"It is not true that (the smartphone is turned on and is charged)."
+"There exists an electronic device that is not (turned on and not charged)."
