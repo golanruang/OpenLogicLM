@@ -4,45 +4,119 @@ Variables - Variables are represented by lower case letters surrounded by bracke
 Predicates - Predicates are represented by upper case letters such as {A}, {B}, {AB}, or {BD}. 
 
 There are two types of formulations. 
-a) Predicate + variable. When the input consists of predicates and variables, the variables are nouns and the predicate acts as a descriptor. 
+a) Predicate + variable. When the input consists of predicates and variables, the variables are nouns and the predicate ALWAYS acts as a descriptor of the form {variable} .... 
         {AA} = {variable} is large. 
         {ab} = {desk}
-        When combined, the predicate ({AA}) will describe the variable ({ab}): {AA}{ab} = The desk is large. 
-    When we see the variable x (not surrounded by curly braces), x is a general noun. 
-        x = types of plants (including flowers, vegetables, trees, etc.)
+        {AA}{ab} = The desk is large. 
 
 b) {Predicate}. In this formulation, the predicate is a statement. 
     {AA} = Dylan likes pies. 
 
 (Ex) means that there exists an x such that...
-(x) means that for all x such that...
+(x) is a general noun. For example, 
+    x = types of plants (including flowers, vegetables, trees, etc.)
 
 Below are some examples. 
 ------
-Ex 1: Using predicates 
-Situation: 
+Ex 1: Using predicates only
+Situation: This problem is about a city park. 
+{A}: city park is open
+{C}: lighting system is functional 
+{DN}: gate is locked 
+{B}: walkways are cleared 
+{DD}: fountains are working 
+{JI}: night patrol is active 
+{AJ}: safety measures are active 
+{GF}: visibility is adequate 
+{AA}: Recreation areas are accessible 
+{AB}: night patrol is active 
+{DH}: garden areas are maintained 
+{AS}: emergency exits are accessible 
+"hypothesis_formula": "({A} & {C})"
+"sent1": "\u00ac{DN}"
+"sent2": "\u00ac{B}"
+"sent3": "(\u00ac{A} & {B}) -> \u00ac{DD}"
+"sent4": "{C}" 
+"sent5": "\u00ac{JI} -> \u00ac({AJ} & {GF})"
+"sent6": "\u00ac({AA} & \u00ac{AB}) -> {B}"
+"sent7": "\u00ac{A} -> \u00ac({AA} & \u00ac{AB})"
+"sent8": "{DH}"
+"sent9": "{AS}"
 
-"hypothesis_formula": "{C}"
-"context_formula": "sent1: \u00ac{B} -> ({CP} & {A}) sent2: {FC} sent3: {B} -> {C} sent4: ({A} & {B}) sent5: ({EP} & {CS}) sent6: {N} -> {GU} sent7: {A}", "proofs": ["sent4 -> int1: the gassing happens.; sent3 & int1 -> hypothesis;"]
-"proofs_formula": ["sent4 -> int1: {B}; sent3 & int1 -> hypothesis;"]
+Output: 
+"hypothesis": "the city park is open and the visibility is adequate."
+"sent1": "the gate is not locked." 
+"sent2": "the walkways are not cleared." 
+"sent3": "if the park is not opened and the walkways are cleared, then the fountains are not working." 
+"sent4": "the lighting system is functional." 
+"sent5": "If the night patrol is not active, it means that the safety measures and the visibility are not adequate."
+"sent6": "If the recreational areas are not accessible and the night patrol is active, the walkways are cleared."
+"sent7": "If the park is not open, it means that the recreational areas are not accessible and the night patrol is active."
+"sent8": "the garden areas are maintained." 
+"sent9": "the emergency exits are accessible." 
+
+Ex 2: Using variables and predicates 
+
+
+{b} = goldfish
+{ab} = three-pointers
+{a} = water
+{D} = Matcha loves {variable}
+{AD} = Michael shoots {variable} 
+{A} = Cows eat {variable} 
+{C} = Dumbledorf feeds {variable} 
+{AA} = Swedish Fish read {variable}
+{AB} = Cats claw {variable}
+{B} = Rice needs {variable}
+"hypothesis_formula": "{D}{b}"
+"sent1": {AD}{ab}
+"sent2": (\u00ac{A}{b} & {C}{b}) -> {D}{b}
+"sent3": (x): \u00ac(\u00ac{AA}x v \u00ac{AB}x)
+"sent4": 
+"sent5": 
+"sent6": 
+"context_formula": "sent1: {AD}{ab} sent2: (\u00ac{A}{b} & {C}{b}) -> {D}{b} sent3: (x): \u00ac(\u00ac{AA}x v \u00ac{AB}x) -> \u00ac{A}{b} sent4: {B}{a} sent5: (\u00ac{AA}{a} v \u00ac{AB}{a}) -> \u00ac{B}{a} sent6: {C}{b}"
+"proofs_formula": ["void -> assump1: (\u00ac{AA}{a} v \u00ac{AB}{a}); sent5 & assump1 -> int1: \u00ac{B}{a}; int1 & sent4 -> int2: #F#; [assump1] & int2 -> int3: \u00ac(\u00ac{AA}{a} v \u00ac{AB}{a}); int3 -> int4: (Ex): \u00ac(\u00ac{AA}x v \u00ac{AB}x); int4 & sent3 -> int5: \u00ac{A}{b}; int5 & sent6 -> int6: (\u00ac{A}{b} & {C}{b}); int6 & sent2 -> hypothesis;"]
 
 Output: 
 
 
-Ex 2: Using variables and predicates 
+"hypothesis": "Matcha loves XTRA Cheddar Goldfish."
+"context_formula": "sent1: Michael shoots three-pointers. sent2: If cows do not eat goldfish and Dumbledorf does feed goldfish, Matcha loves goldfish. sent3: For any object x, if it is not true that Swedish Fish do not read x and cats do not claw x, this means that cows do not eat goldfish. sent4: Rice needs water. sent5: If Swedish Fish do not read water and cats do not claw water, Rice does not need water. sent6: Dumbledorf feeds goldfish.
+"proofs": ["void -> assump1: Swedish fish do not read water and cat do not claw water; sent5 & assump1 -> int1: Rice does not need water; int1 & sent4 -> int2: #F#; [assump1] & int2 -> int3: It is not true that Swedish Fish do not read water and cats do not claw water; int3 -> int4: There exists an x such that it is not true that Swedish fish read x and cats claw x; int4 & sent3 -> int5: Cows do not eat goldfish; int5 & sent6 -> int6: Cows do not eat goldfish and Dumbledorf feeds goldfish; int6 & sent2 -> hypothesis;"] 
+
 Ex 3: Using variables and predicates and (Ex)
+Situation: This problem is about a local gym and its facilities.
+{E} = gym is open for 24 hours
+{c} = swimming pool
+{C} = swimming pool is closed for maintenance
+{a} = treadmill area
+{D} = personal training sessions are available
+{b} = yoga studio
+{B} = yoga studio is booked for a private event
+{A} = gym membership is active
+x = types of gym facilities (including treadmills, swimming pools, yoga studios, etc.)
+{AA} = {variable} is currently crowded
+{aa} = locker rooms
+"hypothesis_formula": "\u00ac{E}{c}"
+"context_formula": "sent1: \u00ac{C}{a} -> {D}{b} sent2: (x ): \u00ac{B}x -> \u00ac({A}x & {E}x) sent3: {B}{a} sent4: {A}{a} -> \u00ac{C}{a} sent5: (x): ({A}x v {B}x) -> \u00ac{C}x sent6: {D}{b} -> {E}{c} sent7: ({D}{a} v {C}{a}) sent8: (x): \u00ac({A}x & {E}x) -> \u00ac{E}x sent9: {AA}{aa}"
+"proofs_formula": ["sent3 -> int1: ({A}{a} v {B}{a}); sent5 -> int2: ({A}{a} v {B}{a}) -> \u00ac{C}{a}; int1 & int2 -> int3: \u00ac{C}{a}; int3 & sent1 -> int4: {D}{b}; int4 & sent6 -> hypothesis;"]
+
+Output: 
+"hypothesis": "The swimming pool is not open for 24 hours." 
+
+
 Ex 4: Using variables and predicates and (forAll)
 
 
-Situation: 
-This problem is about a public library and its services.
-{n} = online catalog
-{z} = study rooms
-x = types of library services (including borrowing books, using study rooms, online resources, etc.)
-{ZZ} = {variable} is available online
-{CN} = {variable} is reserved
 
-Formulas: 
-{D}{b}, 
+Situation: This problem is about morning beverages. 
+{AA} = {variable} is caffeinated
+{AB} = {variable} is served hot
+{A} = {variable} is preferred by the office
+{a} = coffee
+{x} = types of morning beverages (including coffee, tea, juice, etc.)
+
+Output: 
 
 ------

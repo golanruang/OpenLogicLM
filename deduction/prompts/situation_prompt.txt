@@ -1,24 +1,25 @@
 Task: 
 1. Generate a real-world situation. 
-2. Given a set of variables, variable conjugates, and predicates, assign each an interpretation related to the generated situation. 
-    - By conjugate, I mean variables with a \u00ac in front. \u00ac{A} means the conjugate of {A}. \u00ac{B}{cc} means the conjugate of {B}{cc}. 
-
-Variables - Variables are represented by lower case letters surrounded by brackets, such as {aa}, {a}, {b}, or {c}.
-Predicates - Predicates are represented by upper case letters such as {A}, {B}, {AB}, or {BD}. 
+2. Given a set of subjects, predicates, and predicate conjugates, assign each an interpretation related to the generated situation. 
+    
+Subjects - Subjects are represented by LOWERCASE letters surrounded by brackets, such as {aa}, {a}, {b}, or {c}.
+Predicates - Predicates are represented by UPPERCASE letters such as {A}, {B}, {AB}, or {BD}. 
+Predicate Conjugates - \u00ac{A} is the predicate conjugate of {A}. 
 
 There are two types of formulations. 
-a) Predicate + variable. When the input consists of predicates and variables, the variables are nouns and the predicate acts as a descriptor. 
-        {AA} = {variable} is large. 
-        {ab} = {desk}
-        When combined, the predicate ({AA}) will describe the variable ({ab}): {AA}{ab} = The desk is large. 
-    When we see the variable x (not surrounded by curly braces), x is a general noun. 
+a) Predicate + subject (THE INPUT CONSISTS OF UPPERCASE AND LOWERCASE LETTERS). The predicate should be defined in the form: {variable} ___.  
+        Predicate {A} = {variable} is large. 
+        Subject {ab} = desk
+        When combined, the predicate ({A}) will describe the subject ({ab}): {A}{ab} = The desk is large. 
+    x is a general noun. 
         x = types of plants (including flowers, vegetables, trees, etc.)
 
-b) {Predicate}. In this formulation, the predicate is a statement. 
+b) Predicate (THE INPUT CONSISTS OF ONLY UPPERCASE LETTERS). When the input consists of ONLY predicates, the predicate is a statement.
     {AA} = Dylan likes pies. 
 
 Here are two examples: 
 ------
+Example 1: ONLY UPPERCASE LETTERS IN INPUT -> DEFINE PREDICATES AS STATEMENTS
 Input: 
 {D}, {AD}, \u00ac{AD}, {A}, {C}, \u00ac{C}, {AA}, {AB}, {B}
 
@@ -34,6 +35,7 @@ Situation: This problem is about a city park and its lighting system.
 {AB} = emergency exits are accessible 
 {B} = walkways are cleared 
 
+Example 2: UPPERCASE AND LOWERCASE LETTERS IN INPUT -> DEFINE PREDICATES AS DESCRIPTORS OF FORM {variable} ___. 
 Input: 
 {a}, {b}, x, {AA}, {AB}, {A}, \u00ac{AA}, \u00ac{AB}
 
@@ -43,11 +45,12 @@ Situation: This problem is about morning beverages.
 {b} = orange juice
 x = types of morning beverages (including coffee, tea, juice, etc.)
 {AA} = {variable} is caffeinated
-{AB} = {variable} is served hot
+{B} = {variable} is served hot
 {A} = {variable} is preferred by the office
 \u00ac{AA} = {variable} is not caffeinated
-\u00ac{AB} = {variable} is not served hot 
+\u00ac{B} = {variable} is not served hot 
 
+Example 3: UPPERCASE AND LOWERCASE LETTERS IN INPUT -> DEFINE PREDICATES AS DESCRIPTORS OF FORM {variable} ___. 
 Input: 
 {n}, {z}, x, {ZZ}, {CN}, {CN}
 
@@ -60,5 +63,6 @@ x = types of library services (including borrowing books, using study rooms, onl
 {CN} = {variable} is reserved
 ------
 Input: 
-{C}, {B}, {CP}, {A}, {FC}, {EP}, {CS}, {N}, {GU}, {}
+[[TEMPLATE]]
+
 Output:
