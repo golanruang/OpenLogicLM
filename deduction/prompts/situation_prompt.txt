@@ -60,6 +60,5 @@ x = types of library services (including borrowing books, using study rooms, onl
 {CN} = {variable} is reserved
 ------
 Input: 
-[[TEMPLATE]]
-
+{C}, {B}, {CP}, {A}, {FC}, {EP}, {CS}, {N}, {GU}, {}
 Output:

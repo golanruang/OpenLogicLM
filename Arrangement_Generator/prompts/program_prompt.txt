@@ -1,7 +1,8 @@
 Task description: Given the context for a problem, generate a complete logical reasoning problem by: 
-1) Introducing a few more constraints, if possible and the problem is still valid. 
-2) Creating a query (A,B,C,D,E) that only has one solution
-3) Labeling the query as True or False. 
+1) Translating the problem into symbolic language
+2) Introducing a few more constraints, if possible and the problem is still valid. 
+3) Creating a query (A,B,C,D,E) that only has one solution
+4) Labeling the query as True or False. 
 
 ------
 Context: 
@@ -14,6 +15,5 @@ The following paragraphs each describe a set of five objects arranged in a fixed
 Output:
 Domain:\n1: oldest\n5: newest\nVariables:\nconvertible [IN] [1, 2, 3, 4, 5]\nsedan [IN] [1, 2, 3, 4, 5]\ntractor [IN] [1, 2, 3, 4, 5]\nminivan [IN] [1, 2, 3, 4, 5]\nlimousine [IN] [1, 2, 3, 4, 5]\nConstraints:\ntractor > minivan ::: The tractor is newer than the minivan.\ntractor < limousine ::: The tractor is older than the limousine.\nconvertible < sedan ::: The convertible is older than the sedan.\nconvertible == 2 ::: The convertible is the second-newest.\nAllDifferentConstraint([convertible, sedan, tractor, minivan, limousine]) ::: All vehicles have different values.\nQuery:\nA) convertible == 2 ::: The convertible is the second-newest.\nB) sedan == 2 ::: The sedan is the second-newest.\nC) tractor == 2 ::: The tractor is the second-newest.\nD) minivan == 2 ::: The minivan is the second-newest.\nE) limousine == 2 ::: The limousine is the second-newest.\n\nLabel: B
 ------
-
 Context: 
 [[CONTEXT]]

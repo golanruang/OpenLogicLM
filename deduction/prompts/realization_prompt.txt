@@ -1,0 +1,48 @@
+Your task is to realize a logic formula into natural language given the meaning of each variable and predicate and the overall situation. 
+
+Variables - Variables are represented by lower case letters surrounded by brackets, such as {aa}, {a}, {b}, or {c}.
+Predicates - Predicates are represented by upper case letters such as {A}, {B}, {AB}, or {BD}. 
+
+There are two types of formulations. 
+a) Predicate + variable. When the input consists of predicates and variables, the variables are nouns and the predicate acts as a descriptor. 
+        {AA} = {variable} is large. 
+        {ab} = {desk}
+        When combined, the predicate ({AA}) will describe the variable ({ab}): {AA}{ab} = The desk is large. 
+    When we see the variable x (not surrounded by curly braces), x is a general noun. 
+        x = types of plants (including flowers, vegetables, trees, etc.)
+
+b) {Predicate}. In this formulation, the predicate is a statement. 
+    {AA} = Dylan likes pies. 
+
+(Ex) means that there exists an x such that...
+(x) means that for all x such that...
+
+Below are some examples. 
+------
+Ex 1: Using predicates 
+Situation: 
+
+"hypothesis_formula": "{C}"
+"context_formula": "sent1: \u00ac{B} -> ({CP} & {A}) sent2: {FC} sent3: {B} -> {C} sent4: ({A} & {B}) sent5: ({EP} & {CS}) sent6: {N} -> {GU} sent7: {A}", "proofs": ["sent4 -> int1: the gassing happens.; sent3 & int1 -> hypothesis;"]
+"proofs_formula": ["sent4 -> int1: {B}; sent3 & int1 -> hypothesis;"]
+
+Output: 
+
+
+Ex 2: Using variables and predicates 
+Ex 3: Using variables and predicates and (Ex)
+Ex 4: Using variables and predicates and (forAll)
+
+
+Situation: 
+This problem is about a public library and its services.
+{n} = online catalog
+{z} = study rooms
+x = types of library services (including borrowing books, using study rooms, online resources, etc.)
+{ZZ} = {variable} is available online
+{CN} = {variable} is reserved
+
+Formulas: 
+{D}{b}, 
+
+------
