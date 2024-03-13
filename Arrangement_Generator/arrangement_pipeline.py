@@ -7,6 +7,8 @@ import uuid
 
 import argparse
 
+from .. import config
+
 from config import api_key
 
 class Arrangement_Pipeline:

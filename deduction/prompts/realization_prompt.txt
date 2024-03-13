@@ -18,7 +18,8 @@ b) {Predicate}. In this formulation, the predicate is a statement.
 
 Below are some examples. 
 ------
-Ex 1: Using predicates only
+Ex 1: Using predicates only (UPPERCASE LETTERS ONLY)
+Input: 
 Situation: This problem is about a city park. 
 {A}: city park is open
 {C}: lighting system is functional 
@@ -55,35 +56,35 @@ Output:
 "sent8": "the garden areas are maintained." 
 "sent9": "the emergency exits are accessible." 
 
-Ex 2: Using variables and predicates 
-
-
-{b} = goldfish
-{ab} = three-pointers
-{a} = water
-{D} = Matcha loves {variable}
-{AD} = Michael shoots {variable} 
-{A} = Cows eat {variable} 
-{C} = Dumbledorf feeds {variable} 
-{AA} = Swedish Fish read {variable}
-{AB} = Cats claw {variable}
-{B} = Rice needs {variable}
-"hypothesis_formula": "{D}{b}"
-"sent1": {AD}{ab}
-"sent2": (\u00ac{A}{b} & {C}{b}) -> {D}{b}
-"sent3": (x): \u00ac(\u00ac{AA}x v \u00ac{AB}x)
-"sent4": 
-"sent5": 
-"sent6": 
-"context_formula": "sent1: {AD}{ab} sent2: (\u00ac{A}{b} & {C}{b}) -> {D}{b} sent3: (x): \u00ac(\u00ac{AA}x v \u00ac{AB}x) -> \u00ac{A}{b} sent4: {B}{a} sent5: (\u00ac{AA}{a} v \u00ac{AB}{a}) -> \u00ac{B}{a} sent6: {C}{b}"
-"proofs_formula": ["void -> assump1: (\u00ac{AA}{a} v \u00ac{AB}{a}); sent5 & assump1 -> int1: \u00ac{B}{a}; int1 & sent4 -> int2: #F#; [assump1] & int2 -> int3: \u00ac(\u00ac{AA}{a} v \u00ac{AB}{a}); int3 -> int4: (Ex): \u00ac(\u00ac{AA}x v \u00ac{AB}x); int4 & sent3 -> int5: \u00ac{A}{b}; int5 & sent6 -> int6: (\u00ac{A}{b} & {C}{b}); int6 & sent2 -> hypothesis;"]
+Ex 2: Using variables and predicates (UPPERCASE AND LOWERCASE)
+Input: 
+Situation: This problem is about a local community garden.
+{a} = tomato plants
+{b} = rose bushes
+{c} = compost bin
+x = types of elements found in a community garden (including plants, flowers, vegetables, trees, compost bins, etc.)
+{C} = {variable} needs watering
+{D} = {variable} is blooming
+{AA} = {variable} attracts bees
+{AB} = {variable} is used for educational workshops
+{B} = {variable} is newly planted
+{A} = {variable} produces vegetables
+"hypothesis_formula": "(\u00ac{C}{c} & {D}{c})"
+sent1: (\u00ac{AA}{a} & \u00ac{AB}{a}) -> {B}{b}
+sent2: (x): \u00ac({B}x & {D}x) -> \u00ac{D}x
+sent3: {D}{c}
+sent4: \u00ac{A}{c} -> \u00ac{C}{c}
+sent5: \u00ac{B}{b}
+sent6: \u00ac(\u00ac{AA}{a} & \u00ac{AB}{a}) -> \u00ac{A}{c}
 
 Output: 
-
-
-"hypothesis": "Matcha loves XTRA Cheddar Goldfish."
-"context_formula": "sent1: Michael shoots three-pointers. sent2: If cows do not eat goldfish and Dumbledorf does feed goldfish, Matcha loves goldfish. sent3: For any object x, if it is not true that Swedish Fish do not read x and cats do not claw x, this means that cows do not eat goldfish. sent4: Rice needs water. sent5: If Swedish Fish do not read water and cats do not claw water, Rice does not need water. sent6: Dumbledorf feeds goldfish.
-"proofs": ["void -> assump1: Swedish fish do not read water and cat do not claw water; sent5 & assump1 -> int1: Rice does not need water; int1 & sent4 -> int2: #F#; [assump1] & int2 -> int3: It is not true that Swedish Fish do not read water and cats do not claw water; int3 -> int4: There exists an x such that it is not true that Swedish fish read x and cats claw x; int4 & sent3 -> int5: Cows do not eat goldfish; int5 & sent6 -> int6: Cows do not eat goldfish and Dumbledorf feeds goldfish; int6 & sent2 -> hypothesis;"] 
+"hypothesis": "The compost bin doesn't need watering and is blooming."
+"sent1": "If tomato plants do not attract bees and are not used for educational workshops, then rose bushes are newly planted."
+"sent2": "For any element in the garden, if it is not newly planted and blooming, then it is not blooming."
+"sent3": "The compost bin is blooming."
+"sent4": "If the compost bin does not produce vegetables, then it does not need watering."
+"sent5": "The rose bushes are not newly planted."
+"sent6": "If it is not the case that tomato plants do not attract bees and are not used for educational workshops, then the compost bin does not produce vegetables."
 
 Ex 3: Using variables and predicates and (Ex)
 Situation: This problem is about a local gym and its facilities.
@@ -98,6 +99,8 @@ Situation: This problem is about a local gym and its facilities.
 x = types of gym facilities (including treadmills, swimming pools, yoga studios, etc.)
 {AA} = {variable} is currently crowded
 {aa} = locker rooms
+
+
 "hypothesis_formula": "\u00ac{E}{c}"
 "context_formula": "sent1: \u00ac{C}{a} -> {D}{b} sent2: (x ): \u00ac{B}x -> \u00ac({A}x & {E}x) sent3: {B}{a} sent4: {A}{a} -> \u00ac{C}{a} sent5: (x): ({A}x v {B}x) -> \u00ac{C}x sent6: {D}{b} -> {E}{c} sent7: ({D}{a} v {C}{a}) sent8: (x): \u00ac({A}x & {E}x) -> \u00ac{E}x sent9: {AA}{aa}"
 "proofs_formula": ["sent3 -> int1: ({A}{a} v {B}{a}); sent5 -> int2: ({A}{a} v {B}{a}) -> \u00ac{C}{a}; int1 & int2 -> int3: \u00ac{C}{a}; int3 & sent1 -> int4: {D}{b}; int4 & sent6 -> hypothesis;"]
