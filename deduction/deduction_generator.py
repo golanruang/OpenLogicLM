@@ -33,9 +33,9 @@ class DeductionGenerator:
         self.corpus = ""
         self.hypothesis_sym = ""
         self.hypothesis_nl = ""
-        self.context_sym.clear() 
-        self.context_nl.clear() 
-        self.variables.clear() 
+        self.context_sym = {}
+        self.context_nl = {}
+        self.variables = set() 
 
     def init_new_corpus(self, corpus):
         """
@@ -118,6 +118,7 @@ if __name__ == "__main__":
         for line in f: 
             gen.init_new_corpus(line)
             gen.parse_variables()
-            gen.realize_situation()
+            situation = gen.realize_situation()
+            print(f"\n{situation}")
     # gen.realize_clause()
     
