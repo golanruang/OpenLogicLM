@@ -1,15 +1,15 @@
-from arrangement_parser import Arrangement_Parser
-from arrangement_solver import *
-from openai_utils import OpenAIModel
+import sys
+sys.path.append('../')
+from arrangement.arrangement_parser import Arrangement_Parser
+from arrangement.arrangement_solver import * 
+from utils.openai_utils import OpenAIModel
+from utils.config import api_key
+
 import json
 import os
 import uuid
 
 import argparse
-
-from .. import config
-
-from config import api_key
 
 class Arrangement_Pipeline:
     def __init__(self, args):
