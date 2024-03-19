@@ -22,6 +22,7 @@ class DeductionGenerator:
         self.context_nl = {}                # sent2 (key): "For any element in the garden, if it is not newly planted and blooming, then it is not blooming." (val)
         self.variables = set() 
         self.openai_api = OpenAIModel(api_key, model_name='gpt-4', stop_words='------', max_new_tokens=1024)
+        self.realized_variables = ""
 
     def get_hypothesis_sym(self): return self.hypothesis_sym
     def get_hypothesis_nl(self): return self.hypothesis_nl
@@ -58,9 +59,16 @@ class DeductionGenerator:
                     start -= 1
                 self.variables.add(formula[start:end+1])
                 formula = formula[end+1:]
+
+        def find_x(formula):
+            # return true if formula contains x 
+            if formula.find("(x)") != -1 or formula.find("Ex") != -1: 
+                self.variables.add('x')
             
         find_variables(self.corpus['hypothesis_formula'])
         find_variables(self.corpus['context_formula'])
+        find_x(self.corpus['hypothesis_formula'])
+        find_x(self.corpus['context_formula'])
 
         def sort_key(s):
             start = s.find('{')
@@ -72,30 +80,46 @@ class DeductionGenerator:
 
         self.variables = sorted(self.variables, key=sort_key)
 
-        print(f"variables: {self.variables}")
+        formatted = " ".join(self.variables)
+        print(f"variables: {formatted}")
 
     def parse_clauses(self):
         """
         takes corpus and appends all sentences in order (hypothesis first) to self.sentences
+        'context_formula': 
+        'sent1: (¬{AA}{a} & ¬{AB}{a}) -> {B}{b} sent2: (x): ¬({B}x & {D}x) -> ¬{D}x sent3: {D}{c} sent4: ¬{A}{c} -> ¬{C}{c} sent5: ¬{B}{b} sent6: ¬(¬{AA}{a} & ¬{AB}{a}) -> ¬{A}{c}'
         """
-        pass
+        print("in parse_clauses...")
+        self.hypothesis_sym = self.corpus['hypothesis_formula']
+
+        def find_sentences(context_formula):
+            while context_formula.find("sent") != -1:
+                start = context_formula.find("sent")
+                colon_idx = context_formula.find(":")
+                end = context_formula.find("sent", colon_idx)
+
+                if end == -1: end = len(context_formula) - 1
+
+                sent_num = context_formula[start : colon_idx]
+                sentence = context_formula[colon_idx + 1 : end]
+                self.context_sym[sent_num] = sentence
+
+                context_formula = context_formula[end:]
+
+        context_formula = self.corpus['context_formula']
+        find_sentences(context_formula)
+        print(f"context_formula: {self.context_sym}")
+
+        return self.context_sym
+    
+    def call_gpt(self, prompt):
+        return self.openai_api.generate(prompt)
 
     def realize_situation(self):
         """
         Use situation prompt and pass variables
         GPT-4 returns meaning of each variable -> save meaning in self.variables
         """
-        def call_gpt(prompt): 
-            s = """
-            Situation: This problem is about a public library and its services.
-            {n} = online catalog
-            {z} = study rooms
-            x = types of library services (including borrowing books, using study rooms, online resources, etc.)
-            {ZZ} = {variable} is available online
-            {CN} = {variable} is reserved
-            """
-            gpt_output = self.openai_api.generate(prompt)
-            return gpt_output
 
         with open('./prompts/situation_prompt.txt', 'r') as f: 
             prompt = f.read()
@@ -103,14 +127,36 @@ class DeductionGenerator:
         var_str = " ".join(self.variables)
         print(f"var_str: {var_str}")
         prompt = prompt.replace('[[TEMPLATE]]', var_str)
+        output = self.call_gpt(prompt)
+
+        self.realized_variables = output
+        print(f"self.realized_variables: {self.realized_variables}")
         
-        return call_gpt(prompt)
+        return self.realized_variables
         
     def realize_clause(self):
         """
         Use realization prompt and realize the meaning of each sentence -> 
+        clauses: {'sent1': ': (¬{AA}{a} & ¬{AB}{a}) -> {B}{b} ', 'sent2': ': (x): ¬({B}x & {D}x) -> ¬{D}x ', 'sent3': ': {D}{c} ', 'sent4': ': ¬{A}{c} -> ¬{C}{c} ', 'sent5': ': ¬{B}{b} ', 'sent6': ': ¬(¬{AA}{a} & ¬{AB}{a}) -> ¬{A}{c}'}
         """
-        pass
+        with open('./prompts/realization_prompt.txt', 'r') as f: 
+            prompt = f.read()
+
+        template = ""
+        template += self.realized_variables + "\n"
+
+        template += f"\"hypothesis\": \"{self.hypothesis_sym}\"\n"
+
+        for k, v in self.context_sym.items():
+            template += f"\"{k}\": \"{v.strip()}\"\n"
+
+        prompt = prompt.replace('[[TEMPLATE]]', template)
+        print(f"prompt: {prompt}")
+
+        output = self.call_gpt(prompt)
+
+        print(f"{output}")
+        return output
 
 if __name__ == "__main__":
     gen = DeductionGenerator()
@@ -119,6 +165,7 @@ if __name__ == "__main__":
             gen.init_new_corpus(line)
             gen.parse_variables()
             situation = gen.realize_situation()
-            print(f"\n{situation}")
-    # gen.realize_clause()
-    
+            # print(f"\n{situation}")
+            clauses = gen.parse_clauses() 
+            # print(f"clauses: {clauses}")
+            gen.realize_clause()    

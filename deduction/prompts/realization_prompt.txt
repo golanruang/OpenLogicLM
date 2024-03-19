@@ -87,39 +87,48 @@ Output:
 "sent6": "If it is not the case that tomato plants do not attract bees and are not used for educational workshops, then the compost bin does not produce vegetables."
 
 Ex 3: Using variables and predicates and (Ex)
-Situation: This problem is about a local gym and its facilities.
-{E} = gym is open for 24 hours
-{c} = swimming pool
-{C} = swimming pool is closed for maintenance
-{a} = treadmill area
-{D} = personal training sessions are available
-{b} = yoga studio
-{B} = yoga studio is booked for a private event
-{A} = gym membership is active
-x = types of gym facilities (including treadmills, swimming pools, yoga studios, etc.)
-{AA} = {variable} is currently crowded
-{aa} = locker rooms
+Input: 
+Situation: This problem is about a school and its facilities.
 
-
-"hypothesis_formula": "\u00ac{E}{c}"
-"context_formula": "sent1: \u00ac{C}{a} -> {D}{b} sent2: (x ): \u00ac{B}x -> \u00ac({A}x & {E}x) sent3: {B}{a} sent4: {A}{a} -> \u00ac{C}{a} sent5: (x): ({A}x v {B}x) -> \u00ac{C}x sent6: {D}{b} -> {E}{c} sent7: ({D}{a} v {C}{a}) sent8: (x): \u00ac({A}x & {E}x) -> \u00ac{E}x sent9: {AA}{aa}"
-"proofs_formula": ["sent3 -> int1: ({A}{a} v {B}{a}); sent5 -> int2: ({A}{a} v {B}{a}) -> \u00ac{C}{a}; int1 & int2 -> int3: \u00ac{C}{a}; int3 & sent1 -> int4: {D}{b}; int4 & sent6 -> hypothesis;"]
-
-Output: 
-"hypothesis": "The swimming pool is not open for 24 hours." 
-
-
-Ex 4: Using variables and predicates and (forAll)
-
-
-
-Situation: This problem is about morning beverages. 
-{AA} = {variable} is caffeinated
-{AB} = {variable} is served hot
-{A} = {variable} is preferred by the office
-{a} = coffee
-{x} = types of morning beverages (including coffee, tea, juice, etc.)
+x = types of school facilities (including classrooms, library, cafeteria, etc.)
+{a} = classrooms
+{b} = library
+{A} = {variable} is under renovation
+¬{A} = {variable} is not under renovation
+{AA} = {variable} is equipped with air conditioning
+{AB} = {variable} is accessible for disabled students
+¬{AI} = {variable} is not available for after-school activities
+¬{B} = {variable} is not open on weekends
+{C} = {variable} is open for evening classes
+¬{C} = {variable} is not open for evening classes
+¬{D} = {variable} is not equipped with projectors
+{D} = {variable} is equipped with projectors
+¬{E} = {variable} is not available for community events
+{HN} = {variable} has a nurse's office
+"hypothesis_formula": "¬{C}{a}"
+"sent1": "(Ex): (¬{D}x & ¬{E}x)"
+"sent2": "(¬{AI}{a} & {HN}{a}) -> {A}{a}"
+"sent3": "(x): ¬(¬{D}x & ¬{E}x) -> {A}{a}"                      # note: needed to manually adjust this because of the double negative. Original translation was: "For all types of school facilities, if they are either equipped with projectors or available for community events, then they are under renovation."
+"sent4": "(Ex): ¬({D}x & ¬{E}x)"
+"sent5": "(x): ¬{A}x -> (¬{B}{b} & {C}{b})"
+"sent6": "({AA}{a} & {AB}{a}) -> ¬{B}{a}"
+"sent7": "(x): (¬{B}x & {A}x) -> {C}x"
+"sent8": "({AA}{a} & {AB}{a})"
+"sent9": "(Ex): ¬(¬{D}x & ¬{E}x)"                               # also needed to manually adjust this because of double negative.
 
 Output: 
-
+"hypothesis": "The classrooms are not open for evening classes."
+"sent1": "There exists at least one type of school facility that is not equipped with projectors and is not available for community events."
+"sent2": "If the classrooms are not available for after-school activities and have a nurse's office, then they are under renovation."
+"sent3": "For all types of school facilities, if they are equipped with projects and available for community events, then the classrooms are under renovation." 
+"sent4": "There exists at least one type of school facility that is not both equipped with projectors and unavailable for community events."
+"sent5": "For any type of school facility, if it is not under renovation, then the library is open on weekends and open for evening classes."
+"sent6": "If the classrooms are equipped with air conditioning and accessible for disabled students, then they are not open on weekends."
+"sent7": "For all types of school facilities, if they are not open on weekends but are under renovation, then they are open for evening classes."
+"sent8": "The classrooms are equipped with air conditioning and are accessible for disabled students."
+"sent9": "There exists at least one type of school facility that is not both not equipped with project and not available for community events.
 ------
+Input: 
+[[TEMPLATE]]
+
+Output:
