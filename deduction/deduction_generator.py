@@ -113,7 +113,7 @@ class DeductionGenerator:
         return self.context_sym
     
     def call_gpt(self, prompt):
-        return self.openai_api.generate(prompt)
+        return self.openai_api.generate(prompt, temperature=0.9)
 
     def realize_situation(self):
         """
@@ -165,7 +165,5 @@ if __name__ == "__main__":
             gen.init_new_corpus(line)
             gen.parse_variables()
             situation = gen.realize_situation()
-            # print(f"\n{situation}")
             clauses = gen.parse_clauses() 
-            # print(f"clauses: {clauses}")
             gen.realize_clause()    

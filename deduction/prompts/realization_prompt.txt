@@ -16,6 +16,10 @@ b) {Predicate}. In this formulation, the predicate is a statement.
 (x) is a general noun. For example, 
     x = types of plants (including flowers, vegetables, trees, etc.)
 
+If you encounter a statement like: ¬(¬{G}x & ¬{F}x), this is equivalent to {G}x OR {F}x by DeMorgans Laws.
+
+TODO: incorporate "OR"
+
 Below are some examples. 
 ------
 Ex 1: Using predicates only (UPPERCASE LETTERS ONLY)
@@ -33,7 +37,7 @@ Situation: This problem is about a city park.
 {AB}: night patrol is active 
 {DH}: garden areas are maintained 
 {AS}: emergency exits are accessible 
-"hypothesis_formula": "({A} & {C})"
+"hypothesis_formula": "({A} & {C})" 
 "sent1": "\u00ac{DN}"
 "sent2": "\u00ac{B}"
 "sent3": "(\u00ac{A} & {B}) -> \u00ac{DD}"
@@ -86,7 +90,7 @@ Output:
 "sent5": "The rose bushes are not newly planted."
 "sent6": "If it is not the case that tomato plants do not attract bees and are not used for educational workshops, then the compost bin does not produce vegetables."
 
-Ex 3: Using variables and predicates and (Ex)
+Ex 3: Using variables and predicates (UPPERCASE AND LOWERCASE) and (Ex)
 Input: 
 Situation: This problem is about a school and its facilities.
 
@@ -108,25 +112,25 @@ x = types of school facilities (including classrooms, library, cafeteria, etc.)
 "hypothesis_formula": "¬{C}{a}"
 "sent1": "(Ex): (¬{D}x & ¬{E}x)"
 "sent2": "(¬{AI}{a} & {HN}{a}) -> {A}{a}"
-"sent3": "(x): ¬(¬{D}x & ¬{E}x) -> {A}{a}"                      # note: needed to manually adjust this because of the double negative. Original translation was: "For all types of school facilities, if they are either equipped with projectors or available for community events, then they are under renovation."
+"sent3": "(x): ¬(¬{D}x & ¬{E}x) -> {A}{a}" 
 "sent4": "(Ex): ¬({D}x & ¬{E}x)"
 "sent5": "(x): ¬{A}x -> (¬{B}{b} & {C}{b})"
 "sent6": "({AA}{a} & {AB}{a}) -> ¬{B}{a}"
 "sent7": "(x): (¬{B}x & {A}x) -> {C}x"
 "sent8": "({AA}{a} & {AB}{a})"
-"sent9": "(Ex): ¬(¬{D}x & ¬{E}x)"                               # also needed to manually adjust this because of double negative.
+"sent9": "(Ex): ¬(¬{D}x & ¬{E}x)" 
 
 Output: 
 "hypothesis": "The classrooms are not open for evening classes."
 "sent1": "There exists at least one type of school facility that is not equipped with projectors and is not available for community events."
 "sent2": "If the classrooms are not available for after-school activities and have a nurse's office, then they are under renovation."
-"sent3": "For all types of school facilities, if they are equipped with projects and available for community events, then the classrooms are under renovation." 
+"sent3": "For all types of school facilities, if they are equipped with projects or available for community events, then the classrooms are under renovation." 
 "sent4": "There exists at least one type of school facility that is not both equipped with projectors and unavailable for community events."
 "sent5": "For any type of school facility, if it is not under renovation, then the library is open on weekends and open for evening classes."
 "sent6": "If the classrooms are equipped with air conditioning and accessible for disabled students, then they are not open on weekends."
 "sent7": "For all types of school facilities, if they are not open on weekends but are under renovation, then they are open for evening classes."
 "sent8": "The classrooms are equipped with air conditioning and are accessible for disabled students."
-"sent9": "There exists at least one type of school facility that is not both not equipped with project and not available for community events.
+"sent9": "There exists at least one type of school facility that is equipped with project or available for community events.
 ------
 Input: 
 [[TEMPLATE]]

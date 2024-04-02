@@ -1,5 +1,5 @@
 Task: 
-1. Generate a real-world situation. 
+1. Generate a real-world situation. Be creative with the situation.
 2. Given a set of subjects, predicates, and predicate conjugates, assign each an interpretation related to the generated situation. 
     
 Subjects - Subjects are represented by LOWERCASE letters surrounded by brackets, such as {aa}, {a}, {b}, or {c}.
