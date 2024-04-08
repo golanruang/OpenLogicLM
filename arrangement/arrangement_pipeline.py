@@ -3,6 +3,17 @@ This arrangement pipeline takes in a template and
 1) generates a context for the problem using gpt 
 2) generates a program for the context using gpt 
 3) generates the z3 program from the program
+
+- Problem: gpt is not good at generating prompts with valid solution 
+    - either the possible solutions are not valid or the question has no solution 
+
+1) generate the template + constraints
+2) solve the template using z3  
+3) given the correct solution, realize the problem and create the queries
+
+- we can check if there is only one solution using z3 -> model needs n constraints
+
+- do we need the program prompt?
 """
 
 import sys
@@ -34,19 +45,22 @@ class Arrangement_Pipeline:
         # I also need template in raw_logic_program format
         template = """
         Domain:
-        1: leftmost
-        5: rightmost
+        1: youngest
+        6: oldest
         Variables:
-        var_1 integer [1, 2, 3, 4, 5]
-        var_2 integer [1, 2, 3, 4, 5]
-        var_3 integer [1, 2, 3, 4, 5]
-        var_4 integer [1, 2, 3, 4, 5]
-        var_5 integer [1, 2, 3, 4, 5]
+        var_1 [1, 2, 3, 4, 5, 6]
+        var_2 [1, 2, 3, 4, 5, 6]
+        var_3 [1, 2, 3, 4, 5, 6]
+        var_4 [1, 2, 3, 4, 5, 6]
+        var_5 [1, 2, 3, 4, 5, 6]
+        var_6 [1, 2, 3, 4, 5, 6]
         Constraints:
-        var_2 > var_5 ::: var_2 is to the right of var_5.
-        var_3 < var_5 ::: var_2 is to the left of var_5.
-        var_2 == 4 ::: var_2 is the second from the right. 
-        var_4 == 2 ::: var_4 is the second from the left. 
+        var_1 > var_3 ::: var_1 is older than var_3.
+        var_6 < var_4 ::: var_6 is younger than var_4.
+        var_5 > var_2 ::: var_5 is older than var_2.
+        var_2 < var_1 ::: var_2 is younger than var_1.
+        var_3 == 1 ::: var_3 is the youngest.
+        var_4 == 5 ::: var_4 is second oldest.
         """
         return template
     

@@ -8,11 +8,11 @@ Domain:
 1: leftmost
 5: rightmost
 Variables:
-var_1 integer [1, 2, 3, 4, 5]
-var_2 integer [1, 2, 3, 4, 5]
-var_3 integer [1, 2, 3, 4, 5]
-var_4 integer [1, 2, 3, 4, 5]
-var_5 integer [1, 2, 3, 4, 5]
+var_1 [1, 2, 3, 4, 5]
+var_2 [1, 2, 3, 4, 5]
+var_3 [1, 2, 3, 4, 5]
+var_4 [1, 2, 3, 4, 5]
+var_5 [1, 2, 3, 4, 5]
 Constraints:
 var_2 > var_5 ::: var_2 is to the right of var_5.
 var_3 < var_5 ::: var_2 is to the left of var_5.
@@ -26,11 +26,11 @@ Template:
 1: youngest
 5: oldest
 Variables:
-var_1 integer [1, 2, 3, 4, 5]
-var_2 integer [1, 2, 3, 4, 5]
-var_3 integer [1, 2, 3, 4, 5]
-var_4 integer [1, 2, 3, 4, 5]
-var_5 integer [1, 2, 3, 4, 5]
+var_1 [1, 2, 3, 4, 5]
+var_2 [1, 2, 3, 4, 5]
+var_3 [1, 2, 3, 4, 5]
+var_4 [1, 2, 3, 4, 5]
+var_5 [1, 2, 3, 4, 5]
 Constraints:
 var_3 < var_4 ::: var_3 is to the younger than var_4.
 var_3 > var_5 ::: var_3 is older than var_5.

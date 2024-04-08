@@ -1,8 +1,6 @@
 Task description: Given the context for a problem, generate a complete logical reasoning problem by: 
-1) Translating the problem into symbolic language
-2) Introducing a few more constraints, if possible and the problem is still valid. 
-3) Creating a query (A,B,C,D,E) that only has one solution
-4) Labeling the query as True or False. 
+1) Translating the problem into symbolic language.
+2) Creating a set of queries (A,B,C,D,E) where only one solution is possible.
 
 ------
 Context: 
