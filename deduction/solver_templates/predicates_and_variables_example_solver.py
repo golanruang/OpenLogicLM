@@ -31,19 +31,38 @@ D = Function('D', _Object, BoolSort())
 
 clauses = [] 
 clauses.append(Implies(And(Not(AA(a)), Not(AB(a))), B(b)))
-clauses.append(Exists([x], Implies(Not(And(B(x), D(x))), Not(D(x)))))
-clauses.append(D(c))
-clauses.append(Implies(Not(A(c)), Not(C(c))))
+# # clauses.append(ForAll([x], Implies(Not(And(B(x), D(x))), Not(D(x)))))
+# clauses.append(D(c))
+# clauses.append(Implies(Not(A(c)), Not(C(c))))
 clauses.append(Not(B(b)))
 clauses.append(Implies(Not(And(Not(AA(a), Not(AB(a))))), Not(A(c))))
 
+clauses.append(A(c))
+
+
+# clauses.append(Not(B(b)))
+# clauses.append(Implies(And(Not(AA(a)), Not(AB(a))), B(b)))
+# Not(And(Not(AA(a)), Not(AB(a))))
+
+
+# clauses.append(Not(Or(AA(a), AB(b))))
+
+
+# clauses.append(Not(B(b)))
+# clauses.append(Implies(A(a), B(b)))
+# clauses.append(A(a))
+
+
+# clauses.append(Not(A(c)))
+
 # not (hypothesis)
-clauses.append(Not(And(Not(C(c)), D(c))))
+# clauses.append(Not(And(Not(C(c)), D(c))))
+# clauses.append(Not(D(c)))
 
 s.add(clauses)
 
 if s.check() == unsat: 
-    print(s.model())
+    # print(s.model())
     print("PROVED")
 
 else:

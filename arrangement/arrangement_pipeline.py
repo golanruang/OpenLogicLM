@@ -1,9 +1,17 @@
+"""
+This arrangement pipeline takes in a template and 
+1) generates a context for the problem using gpt 
+2) generates a program for the context using gpt 
+3) generates the z3 program from the program
+"""
+
 import sys
 sys.path.append('../')
-from arrangement.arrangement_parser import Arrangement_Parser
-from arrangement.arrangement_solver import * 
 from utils.openai_utils import OpenAIModel
 from utils.config import api_key
+
+from arrangement.arrangement_parser import Arrangement_Parser
+from arrangement.arrangement_solver import * 
 
 import json
 import os
@@ -76,8 +84,7 @@ class Arrangement_Pipeline:
     def check_template(self, template): 
         # TODO: finish function
         m = Arrangement_Parser(template)
-        
-
+    
     def generate_data(self, path='./gpt_generated_data/data.json', n=1):
         existing_data = []
 
@@ -123,7 +130,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def main():
+if __name__ == '__main__':
     args = parse_args()
     args.model_name = 'gpt-4'
     args.api_key = api_key
@@ -131,5 +138,3 @@ def main():
 
     p = Arrangement_Pipeline(args)
     p.generate_data(path, 2)
-
-main()
