@@ -7,13 +7,27 @@ This arrangement pipeline takes in a template and
 - Problem: gpt is not good at generating prompts with valid solution 
     - either the possible solutions are not valid or the question has no solution 
 
-1) generate the template + constraints
-2) solve the template using z3  
-3) given the correct solution, realize the problem and create the queries
+1) generate the template + constraints 
+2) solve the template using z3 
+3) given the correct template, realize the problem and create the queries
 
-- we can check if there is only one solution using z3 -> model needs n constraints
+- we can check if there is only one solution using z3 
 
 - do we need the program prompt?
+
+Don't need to make the constraint such that we only have one answer 
+1. ask llm to generate problem and constraints 
+2. solve it using z3 
+3. prompt the llm to design the options based on correct answers
+
+(A B C)
+(C B A)
+
+-> 
+
+1) B should always be in the middle. 
+2)  
+
 """
 
 import sys
@@ -22,7 +36,7 @@ from utils.openai_utils import OpenAIModel
 from utils.config import api_key
 
 from arrangement.arrangement_parser import Arrangement_Parser
-from arrangement.arrangement_solver import * 
+# from arrangement.arrangement_solver import * 
 
 import json
 import os

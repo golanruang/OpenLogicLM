@@ -196,13 +196,20 @@ class Arrangement_Parser:
     return self.gpt_label
   
   def find_possible_solutions(self):
-    print(f"finding possible solutions...")
-    if self.s.check() == z3.sat:
-      print(self.s.model())
-      return True
-    else:
-      print("Solution does not exist.")
-      return False
+    print(f"finding all possible solutions...")
+    models = []
+    while self.s.check() == sat:
+      m = self.s.model()
+      models.append(m)
+      clauses = []
+      for i in range(1, 6):
+        val_at_i = m.evaluate(self.position(i))
+        clauses.append(self.position(i) == val_at_i)
+
+      self.s.add(Not(And(clauses)))
+      
+    print(f"models: {models}")
+    return models
 
   def query_solver(self):
     print("querying solver...")
@@ -287,48 +294,44 @@ class Arrangement_Parser:
     print("writing inits...")
     self.z3_program+="from z3 import *\n"
     self.z3_program+="from itertools import combinations\n"
-    self.z3_program+="def solve():\n"
+    self.z3_program+="def solve_arrangement():\n"
     self.z3_program+="\ts = Solver()\n"
     self.z3_program+="\tposition = Function(\"pos\", IntSort(), IntSort())\n"
     
   def write_end(self):
     print("writing ending...")
-    self.z3_program+="\tif s.check() == z3.sat:\n"
-    self.z3_program+="\t\tprint(s.model())\n"
-    self.z3_program+="\t\treturn True\n"
-    self.z3_program+="\telse:\n"
-    self.z3_program+="\t\tprint(\"Solution does not exist.\")\n"
-    self.z3_program+="\t\treturn False\n"
-    self.z3_program+="solve()"
+    min_val = min(self.num_to_name.keys())
+    max_val = max(self.num_to_name.keys())
+    self.z3_program+="\tmodels = []\n"
+    self.z3_program+="\twhile s.check() == sat:\n"
+    self.z3_program+="\t\tm = s.model()\n"
+    self.z3_program+="\t\tmodels.append(m)\n"
+    self.z3_program+="\t\tclauses = []\n"
+    self.z3_program+=f"\t\tfor i in range({min_val}, {max_val + 1}):\n"
+    self.z3_program+="\t\t\tval_at_i = m.evaluate(position(i))\n"
+    self.z3_program+="\t\t\tclauses.append(position(i) == val_at_i)\n\n"
+    self.z3_program+="\t\ts.add(Not(And(clauses)))\n"
+    self.z3_program+="\treturn models"
     
 if __name__ == "__main__":
   print("in main...")
   # s = "Domain:\\n1: leftmost\\n5: rightmost\\nVariables:\\nrose [IN] [1, 2, 3, 4, 5]\\ntulip [IN] [1, 2, 3, 4, 5]\\ndaisy [IN] [1, 2, 3, 4, 5]\\nsunflower [IN] [1, 2, 3, 4, 5]\\nlily [IN] [1, 2, 3, 4, 5]\\nConstraints:\\ntulip > lily ::: The tulip is to the right of the lily.\\ndaisy < lily ::: The daisy is to the left of the lily.\\ntulip == 4 ::: The tulip is the second from the right.\\nsunflower == 2 ::: The sunflower is the second from the left.\\nAllDifferentConstraint([rose, tulip, daisy, sunflower, lily]) ::: All plants have different values.\\nQuery:\\nA) rose == 2 ::: The rose is the second from the left.\\nB) tulip == 2 ::: The tulip is the second from the left.\\nC) daisy == 2 ::: The daisy is the second from the left.\\nD) sunflower == 2 ::: The sunflower is the second from the left.\\nE) lily == 2 ::: The lily is the second from the left.\\n\\nLabel: D"
   s = """
 Domain:
-1: lightest
-8: heaviest
+1: shortest
+5: tallest
 Variables:
-var_1 [1, 2, 3, 4, 5, 6, 7, 8]
-var_2 [1, 2, 3, 4, 5, 6, 7, 8]
-var_3 [1, 2, 3, 4, 5, 6, 7, 8]
-var_4 [1, 2, 3, 4, 5, 6, 7, 8]
-var_5 [1, 2, 3, 4, 5, 6, 7, 8]
-var_6 [1, 2, 3, 4, 5, 6, 7, 8]
-var_7 [1, 2, 3, 4, 5, 6, 7, 8]
-var_8 [1, 2, 3, 4, 5, 6, 7, 8]
+var_1 [1, 2, 3, 4, 5]
+var_2 [1, 2, 3, 4, 5]
+var_3 [1, 2, 3, 4, 5]
+var_4 [1, 2, 3, 4, 5]
+var_5 [1, 2, 3, 4, 5]
 Constraints:
-var_1 == 1 ::: var_1 is the lightest.
-var_2 == 2 ::: var_2 is the second lightest.
-var_3 > var_1 ::: var_3 is heavier than the lightest.
-var_4 > var_3 ::: var_4 is heavier than var_3.
-var_5 > var_4 ::: var_5 is heavier than var_4.
-var_6 > var_5 ::: var_6 is heavier than var_5.
-var_7 > var_6 ::: var_7 is heavier than var_6.
-var_8 == 8 ::: var_8 is the heaviest.
-var_7 == 7 ::: var_7 is the second heaviest.
-var_3 < var_5 ::: var_3 is lighter than var_5.
-var_2 < var_4 ::: var_2 is lighter than var_4.
+var_3 == 1 ::: var_3 is the shortest.
+var_2 == 4 ::: var_2 is the second tallest
+var_1 < var_2 ::: f
+var_5 < var_2 ::: g
+var_4 > var_2 ::: k
   """
   a = Arrangement_Parser(s)
   a.find_possible_solutions()

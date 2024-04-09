@@ -2,7 +2,7 @@ Given an integer num_variables, following these steps to create a logic problem:
 1. First define a gradable adjective followed by an attribute, such as 'leftmost-rightmost' or 'youngest-oldest,' to describe the range or extremes of a certain noun.
 2. Generate the set of possible values for each variable in the following manner: 
 For variable i of n, write - var_i [1, 2, ..., n].
-3. Define a set of constraints such that there is only one valid answer and each variable can only be one state. 
+3. Define a set of constraints for the variables such that there exists one or more valid answers. 
 ------
 Template: 
 num_variables = 5
@@ -31,29 +31,29 @@ var_3 == 1
 var_1 == 5
 
 Template: 
-num_variables = 3
+num_variables = 5
 
-Output: 
-Domain: 
+Output:
+Domain:
 1: shortest
-3: tallest
-Variables:
-var_1 [1, 2, 3]
-var_2 [1, 2, 3]
-var_3 [1, 2, 3]
-Constraints:
-var_1 > var_2 ::: var_1 is taller than var_2.
-var_3 < var_1 ::: var_3 is shorter than var_1.
-var_2 < var_3 ::: var_2 is shorter than var_3.
-var_3 == 2 ::: var_3 is the middle in terms of height.
+5: tallest
 
-In this example, the only solution is the following: 
-Analysis: 
-var_1 == 3 
-var_2 == 1 
-var_3 == 2 
+Variables:
+var_1 [1, 2, 3, 4, 5]
+var_2 [1, 2, 3, 4, 5]
+var_3 [1, 2, 3, 4, 5]
+var_4 [1, 2, 3, 4, 5]
+var_5 [1, 2, 3, 4, 5]
+
+Constraints:
+
+var_3 == 1 ::: var_3 is the shortest.
+var_1 > var_3 ::: var_1 is taller than var_3.
+var_2 < var_4 ::: var_2 is shorter than var_4.
+var_5 > var_2 ::: var_5 is taller than var_2.
+
 ------
-In the following output, do NOT include analysis. Follow the exact syntax as the examples provided. Make sure there is only ONE possible solution. 
+In the following output, do NOT include analysis. Follow the exact syntax as the examples provided.
 
 Template: 
 [[TEMPLATE]]
