@@ -1,0 +1,1 @@
+Given a problem, the meanings of the variables, and all the possible solutions, turn the problem into a multiple choice question by generating four false answers and one correct one. 

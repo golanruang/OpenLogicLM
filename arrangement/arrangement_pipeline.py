@@ -18,7 +18,9 @@ This arrangement pipeline takes in a template and
 Don't need to make the constraint such that we only have one answer 
 1. ask llm to generate problem and constraints 
 2. solve it using z3 
-3. prompt the llm to design the options based on correct answers
+3. Generate the context 
+4. Generate the queries based on the possible answers and context
+
 
 (A B C)
 (C B A)
@@ -43,40 +45,36 @@ import os
 import uuid
 
 import argparse
+import random
 
 class Arrangement_Pipeline:
     def __init__(self, args):
         self.templates = []
-        self.num_of_examples = 2
+        self.num_data = 1
 
         self.datapoints = []
         self.data_per_template = 1 # for each template, generate n problems
 
         self.openai_api = OpenAIModel(api_key, args.model_name, args.stop_words, args.max_new_tokens)
+        
+        self.solutions = []
 
     def generate_template(self):
-        # call xinghan's class to generate template
-        # I also need template in raw_logic_program format
-        template = """
-        Domain:
-        1: youngest
-        6: oldest
-        Variables:
-        var_1 [1, 2, 3, 4, 5, 6]
-        var_2 [1, 2, 3, 4, 5, 6]
-        var_3 [1, 2, 3, 4, 5, 6]
-        var_4 [1, 2, 3, 4, 5, 6]
-        var_5 [1, 2, 3, 4, 5, 6]
-        var_6 [1, 2, 3, 4, 5, 6]
-        Constraints:
-        var_1 > var_3 ::: var_1 is older than var_3.
-        var_6 < var_4 ::: var_6 is younger than var_4.
-        var_5 > var_2 ::: var_5 is older than var_2.
-        var_2 < var_1 ::: var_2 is younger than var_1.
-        var_3 == 1 ::: var_3 is the youngest.
-        var_4 == 5 ::: var_4 is second oldest.
-        """
-        return template
+        """generate template using """
+        num_variables = random.randint(3, 8)
+        template_path = "prompts/template_prompt.txt"
+        try:
+            with open(template_path, 'r') as file:
+                contents = file.read()
+                template = contents.replace('[[TEMPLATE]]', f'num_variables = {num_variables}')
+        except FileNotFoundError:
+            print("File not found.")
+        except Exception as e:
+            print("An error occurred:", e)
+            
+        gpt_output = self.openai_api.generate(template, temperature=0.7)
+        print(gpt_output)
+        return gpt_output
     
     def generate_context(self, template):
         directory = 'prompts'
@@ -92,16 +90,6 @@ class Arrangement_Pipeline:
         
         return gpt_output
     
-    def generate_program(self, context):
-        directory = 'prompts'
-        file_path = os.path.join(directory, 'program_prompt.txt')
-        file = open(file_path, 'r')
-        prompt = file.read().replace('[[CONTEXT]]', context)
-        gpt_output = self.openai_api.generate(prompt)
-        gpt_output=gpt_output.replace("Output:", "").strip()
-        print(f"program: \n{gpt_output}")
-        return gpt_output
-    
     def prompt_parser(self, program):
         m = Arrangement_Parser(program)
         z3_program = m.get_z3_program()
@@ -110,51 +98,37 @@ class Arrangement_Pipeline:
         return z3_program, gpt_ans, ans
     
     def check_template(self, template): 
-        # TODO: finish function
         m = Arrangement_Parser(template)
     
     def generate_data(self, path='./gpt_generated_data/data.json', n=1):
-        existing_data = []
-
-        if os.path.exists(path):
-            try: 
-                with open(path, 'r') as file:
-                    for dp in json.load(file):
-                        # print("dp: ", dp)
-                        existing_data.append(dp)
-            except: 
-                existing_data = []
-
-        for _ in range(n):
-            datapoint = {}
-            id = str(uuid.uuid4())
-            template = self.generate_template()
+        for i in range(self.num_data):
+            while True: 
+                template = self.generate_template()
+                a = Arrangement_Parser(template)
+                a.find_possible_solutions()
+                solutions = a.get_solutions()
+                z3 = a.get_z3_program()
+                if solutions:
+                    break 
+                
             context = self.generate_context(template)
-            raw_logic_program = str(self.generate_program(context))
-            z3_program, gpt_ans, ans = self.prompt_parser(raw_logic_program)
-            datapoint['id'] = id
-            datapoint['context'] = context
-            datapoint['raw_logic_program'] = raw_logic_program
-            datapoint['gpt_ans'] = gpt_ans
-            datapoint['ans'] = ans
-            datapoint['z3_program'] = z3_program
-
-            existing_data.append(datapoint)
-
-        with open(path, 'w') as file:
-            json.dump(existing_data, file, indent=4)
-
-        return datapoint
+                
+            print(f"solutions: {solutions}")
+            print(f"z3: {z3}")
+            print(f"context: {context}")
+            
+        return 
+            
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--prompt_path', type=str, default='./prompts/direct_fol_problem_generation.txt')
     parser.add_argument('--num_of_examples', type=int, default=5)
     parser.add_argument('--save_path', type=str, default='./fol_programs')
     parser.add_argument('--api_key', type=str)
     parser.add_argument('--model_name', type=str, default='text-davinci-003')
     parser.add_argument('--stop_words', type=str, default='------')
     parser.add_argument('--max_new_tokens', type=int, default=1024)
+    # parser.add_argument('--num_variables', type)                              # add arg for range of variables
     args = parser.parse_args()
     return args
 
@@ -165,4 +139,7 @@ if __name__ == '__main__':
     path = './gpt_generated_data/data.json'
 
     p = Arrangement_Pipeline(args)
-    p.generate_data(path, 2)
+    p.generate_template()
+    # p.generate_data()
+    
+    # p.generate_data(path, 2)

@@ -1,7 +1,11 @@
-Task description: Given a problem template, generate the context for this template by: 
-1) Defining a domain for the problem.
-2) Substituting the variables for real objects. 
+Task description: Given a problem template, provide a real world context for the problem.
+1. Assign meanings to each variable/
+2. Describe how the variables are related to each other using the provided domain.
+3. Be creative with the context.
 
+Here are some examples: 
+
+NOTE: ask to provide meanings to variables below as well for the query prompt 
 ------
 Template: 
 Domain:
@@ -22,23 +26,28 @@ var_4 == 2 ::: var_4 is the second from the left.
 Output: 
 The following paragraphs each describe a set of five objects arranged in a fixed order. The statements are logically consistent within each paragraph.\n\nOn a shelf, there are five books: a green book, a blue book, a white book, a purple book, and a yellow book. The blue book is to the right of the yellow book. The white book is to the left of the yellow book. The blue book is the second from the right. The purple book is the second from the left.
 
-Template: 
-1: youngest
-5: oldest
-Variables:
-var_1 [1, 2, 3, 4, 5]
-var_2 [1, 2, 3, 4, 5]
-var_3 [1, 2, 3, 4, 5]
-var_4 [1, 2, 3, 4, 5]
-var_5 [1, 2, 3, 4, 5]
-Constraints:
-var_3 < var_4 ::: var_3 is to the younger than var_4.
-var_3 > var_5 ::: var_3 is older than var_5.
-var_1 > var_2 ::: var_1 is older than var_2.
-var_1 == 2 ::: var_1 is the second youngest.
+Domain: 
+1: Smallest 
+7: Largest 
 
-Output:
-The following paragraphs each describe a set of five objects arranged in a fixed order. The statements are logically consistent within each paragraph.\n\nIn an antique car show, there are five vehicles: a convertible, a sedan, a tractor, a minivan, and a limousine. The tractor is newer than the minivan. The tractor is older than the limousine. The convertible is older than the sedan. The convertible is the second-newest.
+Variables: 
+var_1 [1, 2, 3, 4, 5, 6, 7]
+var_2 [1, 2, 3, 4, 5, 6, 7]
+var_3 [1, 2, 3, 4, 5, 6, 7]
+var_4 [1, 2, 3, 4, 5, 6, 7]
+var_5 [1, 2, 3, 4, 5, 6, 7]
+var_6 [1, 2, 3, 4, 5, 6, 7]
+var_7 [1, 2, 3, 4, 5, 6, 7]
+
+Constraints: 
+var_2 > var_5 ::: var_2 is larger than var_5 
+var_3 < var_1 ::: var_3 is smaller than var_1
+var_4 < var_7 ::: var_4 is smaller than var_7
+var_6 > var_1 ::: var_6 is larger than var_1
+var_7 > var_3 ::: var_7 is larger than var_3
+
+Output: In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
 ------
+When generating the 
 Template: 
 [[TEMPLATE]]

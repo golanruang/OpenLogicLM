@@ -1,12 +1,3 @@
-"""
-"raw_logic_programs": [
-      "Domain:\n1: leftmost\n5: rightmost\n
-      Variables:\ngreen_book [IN] [1, 2, 3, 4, 5]\nblue_book [IN] [1, 2, 3, 4, 5]\nwhite_book [IN] [1, 2, 3, 4, 5]\npurple_book [IN] [1, 2, 3, 4, 5]\nyellow_book [IN] [1, 2, 3, 4, 5]\n
-      Constraints:\nblue_book > yellow_book ::: The blue book is to the right of the yellow book.\nwhite_book < yellow_book ::: The white book is to the left of the yellow book.\nblue_book == 4 ::: The blue book is the second from the right.\npurple_book == 2 ::: The purple book is the second from the left.\n
-      AllDifferentConstraint([green_book, blue_book, white_book, purple_book, yellow_book]) ::: All books have different values.\n
-      Query:\nA) green_book == 2 ::: The green book is the second from the left.\nB) blue_book == 2 ::: The blue book is the second from the left.\nC) white_book == 2 ::: The white book is the second from the left.\nD) purple_book == 2 ::: The purple book is the second from the left.\nE) yellow_book == 2 ::: The yellow book is the second from the left."
-    ]
-"""
 from z3 import * 
 from itertools import combinations
 import re
@@ -14,7 +5,6 @@ import json
 
 class Arrangement_Parser:
   def __init__(self, nl_logic):
-    print("initializing parser...")
     self.name_to_num = {}
     self.num_to_name = {}
 
@@ -22,14 +12,13 @@ class Arrangement_Parser:
     self.position = Function("pos", IntSort(), IntSort())
     self.f = open('arrangement_solver.py', 'w')
     self.z3_program = ""
-    self.gpt_label = ""
-    self.ans = ""
 
     self.domain = {}
     self.variables = {} # var_name : list of possible values
     self.constraints = [] # list of strings representing the constraints
     self.query = {}
     self.var_num = 1
+    self.solutions = []
 
     self.parse_logic(nl_logic)
     self.write_inits()
@@ -37,6 +26,12 @@ class Arrangement_Parser:
     self.create_constraints()
     self.write_end()
     self.f.write(self.z3_program)
+    
+  def get_z3_program(self):
+    return self.z3_program
+  
+  def get_solutions(self):
+    return self.solutions
 
   def create_variables(self):
     """
@@ -48,16 +43,12 @@ class Arrangement_Parser:
                       'white_book': [1, 2, 3, 4, 5], 'purple_book': [1, 2, 3, 4, 5], 
                       'yellow_book': [1, 2, 3, 4, 5]}
     """
-    print("creating variables...")
     min_num = min(self.num_to_name.keys())
     max_num = max(self.num_to_name.keys()) + 1
     
-    
     for i in range(min_num, max_num):
-      # self.s.add(Or(self.position(i)==1, self.position(i)==2, self.position(i)==3, self.position(i)==4, self.position(i)==5))
       self.s.add(Or([self.position(i) == pos for pos in range(min_num, max_num)]))
 
-    # self.f.write("\tfor i in range(%d, %d):\n" % (min_num, max_num))
     self.z3_program+="\tfor i in range(%d, %d):\n" % (min_num, max_num)
 
     
@@ -68,7 +59,6 @@ class Arrangement_Parser:
       s+="position(i)==%d, " % i
 
     s = s[:-2]
-    # self.f.write("\t\ts.add(Or(%s))\n" % s)
     self.z3_program += "\t\ts.add(Or(%s))\n" % s
 
   def create_constraints(self):
@@ -82,7 +72,6 @@ class Arrangement_Parser:
                         'blue_book == 4', 'purple_book == 2', 
                         'AllDifferentConstraint([green_book, blue_book, white_book, purple_book, yellow_book])']
     """
-    print("creating constraints...")
 
     min_key = min(self.num_to_name.keys())
     max_key = max(self.num_to_name.keys()) + 1
@@ -93,18 +82,6 @@ class Arrangement_Parser:
     self.z3_program+="\t\ts.add(position(comb[0])!= position(comb[1]))\n"
 
     for constraint in self.constraints:
-      # # print(f"constraint: {constraint}")
-      # if "(" in constraint: # function, not boolean logic
-      #   fcn = constraint.split("(")[0]
-      #   if fcn == "AllDifferentConstraint":
-      #     min_key = min(self.num_to_name.keys())
-      #     max_key = max(self.num_to_name.keys()) + 1
-      #     for comb in combinations(range(min_key, max_key), 2):
-      #       self.s.add(self.position(comb[0])!= self.position(comb[1]))
-      #     self.f.write("\tfor comb in combinations(range(%d, %d), 2):\n" % (min(self.num_to_name.keys()), max(self.num_to_name.keys()) + 1))
-      #     self.f.write("\t\ts.add(position(comb[0])!= position(comb[1]))\n")
-      #     self.z3_program+="\tfor comb in combinations(range(%d, %d), 2):\n" % (min(self.num_to_name.keys()), max(self.num_to_name.keys()) + 1)
-      #     self.z3_program+="\t\ts.add(position(comb[0])!= position(comb[1]))\n"
       s1, sym, s2 = constraint.split(" ")
       self.write_constraint_helper(s1, s2, sym)
 
@@ -119,8 +96,6 @@ class Arrangement_Parser:
       self.z3_program+="\ts.add(%s)\n" % converted
 
   def write_constraint_helper(self, s1, s2, sym):
-    print("writing constraint helper...")
-    print(f"s1: {s1}, s2: {s2}, sym: {sym}")
     s1_var, s2_var = False, False
     if s1 in self.name_to_num:
       s1_var = True
@@ -135,114 +110,86 @@ class Arrangement_Parser:
 
     if sym == ">":
       if s1_var and s2_var: 
-        print("self.s.add(self.position(s1) > self.position(s2))")
         self.s.add(self.position(s1) > self.position(s2))
       elif s2_var: 
-        print("self.s.add(s1 > self.position(s2))")
         self.s.add(s1 > self.position(s2))
       elif s1_var:
-        print("self.s.add(self.position(s1) > s2)")
         self.s.add(self.position(s1) > s2)
     elif sym == "<":
       if s1_var and s2_var: 
-        print("self.s.add(self.position(s1) < self.position(s2))")
         self.s.add(self.position(s1) < self.position(s2))
       elif s2_var: 
-        print("self.s.add(s1 < self.position(s2))")
         self.s.add(s1 < self.position(s2))
       elif s1_var:
-        print("self.s.add(self.position(s1) < s2)")
         self.s.add(self.position(s1) < s2)
     elif sym == ">=":
       if s1_var and s2_var: 
-        print("self.s.add(self.position(s1) >= self.position(s2))")
         self.s.add(self.position(s1) >= self.position(s2))
       elif s2_var: 
-        print("self.s.add(s1 >= self.position(s2))")
         self.s.add(s1 >= self.position(s2))
       elif s1_var:
-        print("self.s.add(self.position(s1) >= s2)")
         self.s.add(self.position(s1) >= s2)
     elif sym == "<=":
       if s1_var and s2_var: 
-        print("self.s.add(self.position(s1) <= self.position(s2))")
         self.s.add(self.position(s1) <= self.position(s2))
       elif s2_var: 
-        print("self.s.add(s1 <= self.position(s2))")
         self.s.add(s1 <= self.position(s2))
       elif s1_var:
-        print("self.s.add(self.position(s1) <= s2)")
         self.s.add(self.position(s1) <= s2)
     elif sym == "==":
       if s1_var and s2_var: 
-        print("self.s.add(self.position(s1) == self.position(s2))")
         self.s.add(self.position(s1) == self.position(s2))
       elif s2_var: 
-        print("self.s.add(s1 == self.position(s2))")
         self.s.add(s1 == self.position(s2))
       elif s1_var:
-        print("self.s.add(self.position(s1) == s2)")
         self.s.add(self.position(s1) == s2)
+        
+    elif sym == "!=": 
+      if s1_var and s2_var:
+        self.s.add(self.position(s1) != self.position(s2))
+      elif s2_var: 
+        self.s.add(s1 != self.position(s2))
+      elif s1_var:
+        self.s.add(self.position(s1) != s2)
     else:
       print(f"symbol {sym} not understood.")
-
-  def get_ans(self):
-    return self.ans
-
-  def get_z3_program(self):
-    return self.z3_program
-  
-  def get_gpt_ans(self):
-    return self.gpt_label
   
   def find_possible_solutions(self):
-    print(f"finding all possible solutions...")
+    min_num = min(self.num_to_name.keys())
+    max_num = max(self.num_to_name.keys()) + 1
+    
     models = []
     while self.s.check() == sat:
       m = self.s.model()
       models.append(m)
+      self.solutions.append(m)
       clauses = []
-      for i in range(1, 6):
+      for i in range(min_num, max_num):
         val_at_i = m.evaluate(self.position(i))
         clauses.append(self.position(i) == val_at_i)
 
       self.s.add(Not(And(clauses)))
-      
-    print(f"models: {models}")
+    
     return models
 
-  def query_solver(self):
-    print("querying solver...")
-    for k in self.query.keys():
-      pos_num, sym, pos = self.query[k].split(" ")
-      if sym == ">":
-        constraint = pos_num > pos
-      if sym == "<":
-        constraint = pos_num < pos
-      if sym == "==":
-        constraint = pos_num == pos
-      self.s.push()
-      self.s.add(constraint)
-      if self.s.check() == sat:
-        print(f"Answer {k} is possible.")
-
-        model = self.s.model()
-        print(f"Model: {model}")
-        self.ans = k
-        return k
-      else:
-        print(f"Answer {k} is not possible.")
-      
-      self.s.pop()
-    
-    return ""
-
   def parse_logic(self, nl_logic):
-
+    """
+    Domain: 
+1: Shortest
+4: Tallest
+Variables: 
+var_1 [1, 2, 3, 4]
+var_2 [1, 2, 3, 4]
+var_3 [1, 2, 3, 4]
+var_4 [1, 2, 3, 4]
+Constraints: 
+var_1 < var_2 ::: var_1 is shorter than var_2
+var_3 > var_4 ::: var_3 is taller than var_4
+var_2 != 3 ::: var_2 is not the third tallest
+var_4 != 1 ::: var_4 is not the shortest
+"""
     curr_section = ""
-    sections = [l.lstrip() for l in nl_logic.split("\n") if l.strip()]
-
-    print("parsing logic...")
+    sections = [l.lstrip().strip() for l in nl_logic.split("\n") if l.strip()]
 
     for section in sections:
       if section == "Domain:":
@@ -258,8 +205,6 @@ class Arrangement_Parser:
       else:
         if curr_section == "Domain:":
           i, rep = section.split(":")
-          # print("i: %s" % i)
-          # print("rep: %s" % rep)
           self.domain[int(i)] = rep.strip()
 
         if curr_section == "Variables:":
@@ -275,23 +220,13 @@ class Arrangement_Parser:
           self.variables[var_name] = pos_vals
 
         if curr_section == "Constraints:": 
-          constraint = section.split(":::")[0]
+          if ":::" in section:
+            constraint = section.split(":::")[0]
+          else:
+            constraint = section
           self.constraints.append(constraint.strip())
 
-        if curr_section == "Query:":
-          letter = section.split(")")[0]
-          query = section.split(":::")[0][3:].strip()
-          if not letter or not query: 
-            continue
-
-          name = str(self.name_to_num[query.split(" ")[0]])
-          symbol = query.split(" ")[1]
-          pos = query.split(" ")[2]
-
-          self.query[letter] = name + " " + symbol + " " + pos
-
   def write_inits(self):
-    print("writing inits...")
     self.z3_program+="from z3 import *\n"
     self.z3_program+="from itertools import combinations\n"
     self.z3_program+="def solve_arrangement():\n"
@@ -299,7 +234,6 @@ class Arrangement_Parser:
     self.z3_program+="\tposition = Function(\"pos\", IntSort(), IntSort())\n"
     
   def write_end(self):
-    print("writing ending...")
     min_val = min(self.num_to_name.keys())
     max_val = max(self.num_to_name.keys())
     self.z3_program+="\tmodels = []\n"
@@ -314,33 +248,25 @@ class Arrangement_Parser:
     self.z3_program+="\treturn models"
     
 if __name__ == "__main__":
-  print("in main...")
-  # s = "Domain:\\n1: leftmost\\n5: rightmost\\nVariables:\\nrose [IN] [1, 2, 3, 4, 5]\\ntulip [IN] [1, 2, 3, 4, 5]\\ndaisy [IN] [1, 2, 3, 4, 5]\\nsunflower [IN] [1, 2, 3, 4, 5]\\nlily [IN] [1, 2, 3, 4, 5]\\nConstraints:\\ntulip > lily ::: The tulip is to the right of the lily.\\ndaisy < lily ::: The daisy is to the left of the lily.\\ntulip == 4 ::: The tulip is the second from the right.\\nsunflower == 2 ::: The sunflower is the second from the left.\\nAllDifferentConstraint([rose, tulip, daisy, sunflower, lily]) ::: All plants have different values.\\nQuery:\\nA) rose == 2 ::: The rose is the second from the left.\\nB) tulip == 2 ::: The tulip is the second from the left.\\nC) daisy == 2 ::: The daisy is the second from the left.\\nD) sunflower == 2 ::: The sunflower is the second from the left.\\nE) lily == 2 ::: The lily is the second from the left.\\n\\nLabel: D"
   s = """
-Domain:
-1: shortest
-5: tallest
-Variables:
-var_1 [1, 2, 3, 4, 5]
-var_2 [1, 2, 3, 4, 5]
-var_3 [1, 2, 3, 4, 5]
-var_4 [1, 2, 3, 4, 5]
-var_5 [1, 2, 3, 4, 5]
-Constraints:
-var_3 == 1 ::: var_3 is the shortest.
-var_2 == 4 ::: var_2 is the second tallest
-var_1 < var_2 ::: f
-var_5 < var_2 ::: g
-var_4 > var_2 ::: k
-  """
+Domain: 
+1: Lowest 
+4: Highest 
+
+Variables: 
+var_1 [1, 2, 3, 4]
+var_2 [1, 2, 3, 4]
+var_3 [1, 2, 3, 4]
+var_4 [1, 2, 3, 4]
+
+Constraints: 
+var_1 < var_2 ::: var_1 is lower than var_2 
+var_3 > var_4 ::: var_3 is higher than var_4
+var_2 == 3 ::: var_2 is the second highest
+var_1 != 4 ::: var_1 is not the highest
+"""
   a = Arrangement_Parser(s)
   a.find_possible_solutions()
-  # z3_prog = a.get_z3_program()
-
-  # print(f"z3 program: \n{z3_prog}")
-  # help with data generation part for FOL 
-  # generate the fol problems using data from seed_dataset and prompting GPT-4 
-  # link it with fol_parser.py to make sure the logic is correct
   
   # will LLAMA be able to generalize these to higher dimension arrangement problems?
   
