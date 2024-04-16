@@ -250,23 +250,32 @@ var_4 != 1 ::: var_4 is not the shortest
 if __name__ == "__main__":
   s = """
 Domain: 
-1: Lowest 
-4: Highest 
+1: Smallest 
+7: Largest 
 
 Variables: 
-var_1 [1, 2, 3, 4]
-var_2 [1, 2, 3, 4]
-var_3 [1, 2, 3, 4]
-var_4 [1, 2, 3, 4]
+var_1 [1, 2, 3, 4, 5, 6, 7]
+var_2 [1, 2, 3, 4, 5, 6, 7]
+var_3 [1, 2, 3, 4, 5, 6, 7]
+var_4 [1, 2, 3, 4, 5, 6, 7]
+var_5 [1, 2, 3, 4, 5, 6, 7]
+var_6 [1, 2, 3, 4, 5, 6, 7]
+var_7 [1, 2, 3, 4, 5, 6, 7]
 
 Constraints: 
-var_1 < var_2 ::: var_1 is lower than var_2 
-var_3 > var_4 ::: var_3 is higher than var_4
-var_2 == 3 ::: var_2 is the second highest
-var_1 != 4 ::: var_1 is not the highest
+var_2 > var_5 ::: var_2 is larger than var_5 
+var_3 < var_1 ::: var_3 is smaller than var_1
+var_4 < var_7 ::: var_4 is smaller than var_7
+var_6 > var_1 ::: var_6 is larger than var_1
+var_7 > var_3 ::: var_7 is larger than var_3
+var_1 > var_7 ::: var_1 is larger than var_7
+var_2 < var_6 ::: var_2 is smaller than var_6
+var_1 == 4 ::: var_1 is the third smallest 
 """
   a = Arrangement_Parser(s)
-  a.find_possible_solutions()
+  s = a.find_possible_solutions()
+  print(f"possible solutions: {s}")
+  
   
   # will LLAMA be able to generalize these to higher dimension arrangement problems?
   

@@ -9,9 +9,12 @@ def solve_arrangement():
 		s.add(position(comb[0])!= position(comb[1]))
 	s.add(position(2) > position(5))
 	s.add(position(3) < position(1))
-	s.add(position(4) > position(6))
-	s.add(position(7) == 3)
-	s.add(position(1) == 5)
+	s.add(position(4) < position(7))
+	s.add(position(6) > position(1))
+	s.add(position(7) > position(3))
+	s.add(position(1) > position(7))
+	s.add(position(2) < position(6))
+	s.add(position(1) == 4)
 	models = []
 	while s.check() == sat:
 		m = s.model()

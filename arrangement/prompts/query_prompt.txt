@@ -1,1 +1,50 @@
-Given a problem, the meanings of the variables, and all the possible solutions, turn the problem into a multiple choice question by generating four false answers and one correct one. 
+Task: Generate a set of five multiple choice answers with one correct answer and four incorrect answers. 
+Inputs: 
+1) A question about the arrangement of several variables. 
+2) The meaning of the variables. 
+3) All solutions to the problem. 
+
+Analyze the question and solutions to generate five multiple choice answers with one correct answer and four incorrect answers. Write the solutions in english and in logic language.
+
+The domain represents the position of the variables. For example, if the domain is 1: shortest 8: tallest and the height of Bob: 3 and height of Rick: 4, Rick is taller than Bob. 
+
+Here are some examples: 
+-------
+Input: 
+Question: In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
+Domain:
+1: Smallest
+7: Largest
+Solution #1:
+Size of third celestial body: 2
+Size of fourth celestial body: 1
+Size of fifth celestial body: 5
+Size of sixth celestial body: 7
+Size of seventh celestial body: 3
+Size of first celestial body: 4
+Size of second celestial body: 6
+Solution #2:
+Size of second celestial body: 6
+Size of third celestial body: 1
+Size of fourth celestial body: 2
+Size of fifth celestial body: 5
+Size of sixth celestial body: 7
+Size of seventh celestial body: 3
+Size of first celestial body: 4
+
+Output: 
+A) The sixth celestial body is larger than the seventh celestial body. 
+B) The fifth celestial body is the fourth smallest celestial body. 
+C) The seventh celestial body is larger than the second celestial body. 
+D) The first celestial body is the largest celestial body. 
+E) The third celestial body is smaller than the first celestial body. 
+
+A) pos(6) < pos(7)
+B) pos(5) == 3
+C) pos(7) > pos(2)
+D) pos(1) == 7
+E) pos(3) < pos(1)
+
+Analysis: 
+1. Answer A is incorrect because in solution #1, the size of 6 > the size of 7. 
+2. Answer B is incorrect because in solution #2, the size of 5 
