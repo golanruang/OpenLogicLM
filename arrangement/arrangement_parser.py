@@ -3,12 +3,21 @@ from itertools import combinations
 import re
 import json
 
+"""
+Create two solvers with question constraints 
+Solver 1: Finds all possible solutions
+Solver 2: Given the queries, checks which queries are correct 
+  - Writes to z3_program to check all queries 
+  
+"""
+
 class Arrangement_Parser:
   def __init__(self, nl_logic):
     self.name_to_num = {}
     self.num_to_name = {}
 
-    self.s = Solver()
+    self.s = Solver()       # solver to find all solutions 
+    self.query_s = Solver() # solver to check all queries
     self.position = Function("pos", IntSort(), IntSort())
     self.f = open('arrangement_solver.py', 'w')
     self.z3_program = ""
@@ -19,13 +28,14 @@ class Arrangement_Parser:
     self.query = {}
     self.var_num = 1
     self.solutions = []
+    
+    self.base_constraints = []
 
     self.parse_logic(nl_logic)
     self.write_inits()
     self.create_variables()
     self.create_constraints()
     self.write_end()
-    self.f.write(self.z3_program)
     
   def get_z3_program(self):
     return self.z3_program
@@ -47,7 +57,9 @@ class Arrangement_Parser:
     max_num = max(self.num_to_name.keys()) + 1
     
     for i in range(min_num, max_num):
-      self.s.add(Or([self.position(i) == pos for pos in range(min_num, max_num)]))
+      self.base_constraints.append(Or([self.position(i) == pos for pos in range(min_num, max_num)]))
+      # self.s.add(Or([self.position(i) == pos for pos in range(min_num, max_num)]))
+      # self.query_s.add(Or([self.position(i) == pos for pos in range(min_num, max_num)]))
 
     self.z3_program+="\tfor i in range(%d, %d):\n" % (min_num, max_num)
 
@@ -59,7 +71,7 @@ class Arrangement_Parser:
       s+="position(i)==%d, " % i
 
     s = s[:-2]
-    self.z3_program += "\t\ts.add(Or(%s))\n" % s
+    self.z3_program += "\t\tconstraints.append(Or(%s))\n" % s
 
   def create_constraints(self):
     """
@@ -76,10 +88,12 @@ class Arrangement_Parser:
     min_key = min(self.num_to_name.keys())
     max_key = max(self.num_to_name.keys()) + 1
     for comb in combinations(range(min_key, max_key), 2):
-      self.s.add(self.position(comb[0])!= self.position(comb[1]))
+      self.base_constraints.append(self.position(comb[0])!= self.position(comb[1]))
+      # self.s.add(self.position(comb[0])!= self.position(comb[1]))
+      # self.query_s.add(self.position(comb[0])!= self.position(comb[1]))
       
     self.z3_program+="\tfor comb in combinations(range(%d, %d), 2):\n" % (min_key, max_key)
-    self.z3_program+="\t\ts.add(position(comb[0])!= position(comb[1]))\n"
+    self.z3_program+="\t\tconstraints.append(position(comb[0])!= position(comb[1]))\n"
 
     for constraint in self.constraints:
       s1, sym, s2 = constraint.split(" ")
@@ -93,10 +107,65 @@ class Arrangement_Parser:
         s2 = "position(%s)" % self.name_to_num[s2]
 
       converted+="%s %s %s" % (s1, sym, s2)
-      self.z3_program+="\ts.add(%s)\n" % converted
+      self.z3_program+="\tconstraints.append(%s)\n" % converted
 
+  def add_constraint(self, s1, s2, s1_var, s2_var, sym):
+    """
+    s1: integer
+    s2: integer
+    s1_var: T/F if s1 is a variable 
+    s2_var: T/F if s2 is a variable
+    sym: relationship symbol
+    """
+    if sym == ">":
+      if s1_var and s2_var: 
+        return self.position(s1) > self.position(s2)
+      elif s2_var: 
+        return s1 > self.position(s2)
+      elif s1_var:
+        return self.position(s1) > s2
+    elif sym == "<":
+      if s1_var and s2_var: 
+        return self.position(s1) < self.position(s2)
+      elif s2_var: 
+        return s1 < self.position(s2)
+      elif s1_var:
+        return self.position(s1) < s2
+    elif sym == ">=":
+      if s1_var and s2_var: 
+        return self.position(s1) >= self.position(s2)
+      elif s2_var: 
+        return s1 >= self.position(s2)
+      elif s1_var:
+        return self.position(s1) >= s2
+    elif sym == "<=":
+      if s1_var and s2_var: 
+        return self.position(s1) <= self.position(s2)
+      elif s2_var: 
+        return s1 <= self.position(s2)
+      elif s1_var:
+        return self.position(s1) <= s2
+    elif sym == "==":
+      if s1_var and s2_var: 
+        return self.position(s1) == self.position(s2)
+      elif s2_var: 
+        return s1 == self.position(s2)
+      elif s1_var:
+        return self.position(s1) == s2
+    elif sym == "!=": 
+      if s1_var and s2_var:
+        return self.position(s1) != self.position(s2)
+      elif s2_var: 
+        return s1 != self.position(s2)
+      elif s1_var:
+        return self.position(s1) != s2
+    else:
+      print(f"symbol {sym} not understood.")
+  
+    
   def write_constraint_helper(self, s1, s2, sym):
     s1_var, s2_var = False, False
+      
     if s1 in self.name_to_num:
       s1_var = True
       s1 = self.name_to_num[s1]
@@ -107,60 +176,22 @@ class Arrangement_Parser:
 
     s1 = int(s1)
     s2 = int(s2)
-
-    if sym == ">":
-      if s1_var and s2_var: 
-        self.s.add(self.position(s1) > self.position(s2))
-      elif s2_var: 
-        self.s.add(s1 > self.position(s2))
-      elif s1_var:
-        self.s.add(self.position(s1) > s2)
-    elif sym == "<":
-      if s1_var and s2_var: 
-        self.s.add(self.position(s1) < self.position(s2))
-      elif s2_var: 
-        self.s.add(s1 < self.position(s2))
-      elif s1_var:
-        self.s.add(self.position(s1) < s2)
-    elif sym == ">=":
-      if s1_var and s2_var: 
-        self.s.add(self.position(s1) >= self.position(s2))
-      elif s2_var: 
-        self.s.add(s1 >= self.position(s2))
-      elif s1_var:
-        self.s.add(self.position(s1) >= s2)
-    elif sym == "<=":
-      if s1_var and s2_var: 
-        self.s.add(self.position(s1) <= self.position(s2))
-      elif s2_var: 
-        self.s.add(s1 <= self.position(s2))
-      elif s1_var:
-        self.s.add(self.position(s1) <= s2)
-    elif sym == "==":
-      if s1_var and s2_var: 
-        self.s.add(self.position(s1) == self.position(s2))
-      elif s2_var: 
-        self.s.add(s1 == self.position(s2))
-      elif s1_var:
-        self.s.add(self.position(s1) == s2)
-        
-    elif sym == "!=": 
-      if s1_var and s2_var:
-        self.s.add(self.position(s1) != self.position(s2))
-      elif s2_var: 
-        self.s.add(s1 != self.position(s2))
-      elif s1_var:
-        self.s.add(self.position(s1) != s2)
-    else:
-      print(f"symbol {sym} not understood.")
-  
+    
+    c = self.add_constraint(s1, s2, s1_var, s2_var, sym)
+    self.base_constraints.append(c)
+    # self.s.add(c)
+    
   def find_possible_solutions(self):
+    # print(f"self.base_constraints: {self.base_constraints}")
+    s = Solver() 
+    for c in self.base_constraints: s.add(c)
+    
     min_num = min(self.num_to_name.keys())
     max_num = max(self.num_to_name.keys()) + 1
     
     models = []
-    while self.s.check() == sat:
-      m = self.s.model()
+    while s.check() == sat:
+      m = s.model()
       models.append(m)
       self.solutions.append(m)
       clauses = []
@@ -168,26 +199,142 @@ class Arrangement_Parser:
         val_at_i = m.evaluate(self.position(i))
         clauses.append(self.position(i) == val_at_i)
 
-      self.s.add(Not(And(clauses)))
+      s.add(Not(And(clauses)))
     
     return models
+  
+  def check_answers(self, answers):
+    """
+    Statement (English): The first variety of pumpkin is the smallest. 
+
+    Statement (Logic): position(1) == 1
+
+    Analysis: 
+    The statement is incorrect because in solution #2, the size of the first variety of pumpkin (2) is not the smallest. 
+
+    To generate an incorrect query, find at least one solution where it is not satisfied. 
+    To generate a correct query, make sure it is correct for ALL solutions.
+    """
+    # def find_second_occurence(string, substring):
+    #     first_index = string.find(substring)
+    #     if first_index != -1:  # If the substring is found at least once
+    #         second_index = string.find(substring, first_index + 1)
+    #         if second_index != -1:  # If the substring is found a second time
+    #             return second_index
+    #     return -1  # If the substring is not found a second time
+    
+    print("checking answers...")
+    answers = answers.split('\n')
+    
+    for answer in answers: 
+      if answer.find("(Logic):") == -1: 
+        continue 
+      
+      logic = answer.split(':')[1].lstrip().strip()
+      print(f"logic: {logic}")
+      s1, sym, s2 = logic.split(" ")
+      self.z3_program += f"\tconstraints.append(Not({s1} {sym} {s2}))\n"
+      self.z3_program += f"\ts = Solver()\n"
+      self.z3_program += f"\tfor c in constraints: s.add(c)\n"
+      self.z3_program += f"\tif s.check() == unsat: return True\n"
+      self.z3_program += f"\telse: return False\n"
+      
+      pos_in_s1 = s1.find('position(')
+      pos_in_s2 = s2.find('position(')
+      s1_var, s2_var = False, False
+      if pos_in_s1 != -1: 
+        # if it's a pos(x)
+        s1_var = True 
+        paren = s1.find('position(') + 9
+        s1 = s1[paren]
+        
+      if pos_in_s2 != -1: 
+        s2_var = True 
+        paren = s2.find('position(') + 9
+        s2 = s2[paren]
+        
+      s1, s2 = int(s1), int(s2)
+        
+      print(f"s1: {s1}, s2: {s2}, s1_var: {s1_var}, s2_var: {s2_var}")
+      
+      s = Solver() 
+      for c in self.base_constraints: s.add(c)
+      c = self.add_constraint(s1, s2, s1_var, s2_var, sym)
+      s.add(Not(c))
+      
+      if s.check() == unsat: 
+        return True 
+      else: 
+        return False
+    
+    return None  
+    
+    # start = answers.find("(Logic)")
+    
+    # answers = answers[start:]
+    # end = answers.find('Analysis:')
+    # answers = answers[:end].strip()
+    # answers = answers.split('\n')
+    
+    # print(f"answers: {answers}")
+    # correct = []
+    # incorrect = []
+    # num_correct = 0
+    # num_incorrect = 0
+    
+    # for line in answers: 
+    #   q, s1, sym, s2 = line.split(" ")
+    #   self.z3_program += f"\t# check answer {q}\n"
+    #   self.z3_program += f"\tconstraints.append(Not({s1} {sym} {s2}))\n"
+    #   self.z3_program += f"\ts = Solver()\n"
+    #   self.z3_program += f"\tfor c in constraints: s.add(c)\n"
+    #   self.z3_program += f"\tif s.check() == unsat: return \"{q[0]}\"\n"
+    #   self.z3_program += f"\tconstraints.pop()\n"
+    #   print(f"q: {q}, s1: {s1}, sym: {sym}, s2: {s2}")
+      
+    #   # for every answer, insert not(constraint) into the model 
+    #   pos_in_s1 = s1.find('position(')
+    #   pos_in_s2 = s2.find('position(')
+    #   s1_var, s2_var = False, False
+    #   if pos_in_s1 != -1: 
+    #     # if it's a pos(x)
+    #     s1_var = True 
+    #     paren = s1.find('position(') + 9
+    #     s1 = s1[paren]
+        
+    #   if pos_in_s2 != -1: 
+    #     s2_var = True 
+    #     paren = s2.find('position(') + 9
+    #     s2 = s2[paren]
+        
+    #   s1, s2 = int(s1), int(s2)
+        
+    #   print(f"s1: {s1}, s2: {s2}, s1_var: {s1_var}, s2_var: {s2_var}")
+      
+    #   s = Solver() 
+    #   for c in self.base_constraints: s.add(c)
+    #   c = self.add_constraint(s1, s2, s1_var, s2_var, sym)
+    #   s.add(Not(c))
+      
+    #   if s.check() == unsat: 
+    #     num_correct += 1
+    #     correct.append(q)
+    #   else: 
+    #     num_incorrect += 1
+    #     incorrect.append(q)
+        
+    # print(f"num_correct: {num_correct}, num_incorrect: {num_incorrect}")
+    # print(f"correct: {correct}")
+    # print(f"incorrect: {incorrect}")
+    
+    # if num_correct == 1 and num_incorrect == 4:
+    #   return True 
+  
+  def write_program_to_file(self):
+    self.f.write(self.z3_program)
+    return 
 
   def parse_logic(self, nl_logic):
-    """
-    Domain: 
-1: Shortest
-4: Tallest
-Variables: 
-var_1 [1, 2, 3, 4]
-var_2 [1, 2, 3, 4]
-var_3 [1, 2, 3, 4]
-var_4 [1, 2, 3, 4]
-Constraints: 
-var_1 < var_2 ::: var_1 is shorter than var_2
-var_3 > var_4 ::: var_3 is taller than var_4
-var_2 != 3 ::: var_2 is not the third tallest
-var_4 != 1 ::: var_4 is not the shortest
-"""
     curr_section = ""
     sections = [l.lstrip().strip() for l in nl_logic.split("\n") if l.strip()]
 
@@ -230,28 +377,28 @@ var_4 != 1 ::: var_4 is not the shortest
     self.z3_program+="from z3 import *\n"
     self.z3_program+="from itertools import combinations\n"
     self.z3_program+="def solve_arrangement():\n"
-    self.z3_program+="\ts = Solver()\n"
+    self.z3_program+="\tconstraints = []\n"
     self.z3_program+="\tposition = Function(\"pos\", IntSort(), IntSort())\n"
     
   def write_end(self):
     min_val = min(self.num_to_name.keys())
     max_val = max(self.num_to_name.keys())
-    self.z3_program+="\tmodels = []\n"
-    self.z3_program+="\twhile s.check() == sat:\n"
-    self.z3_program+="\t\tm = s.model()\n"
-    self.z3_program+="\t\tmodels.append(m)\n"
-    self.z3_program+="\t\tclauses = []\n"
-    self.z3_program+=f"\t\tfor i in range({min_val}, {max_val + 1}):\n"
-    self.z3_program+="\t\t\tval_at_i = m.evaluate(position(i))\n"
-    self.z3_program+="\t\t\tclauses.append(position(i) == val_at_i)\n\n"
-    self.z3_program+="\t\ts.add(Not(And(clauses)))\n"
-    self.z3_program+="\treturn models"
+    # self.z3_program+="\tmodels = []\n"
+    # self.z3_program+="\twhile s.check() == sat:\n"
+    # self.z3_program+="\t\tm = s.model()\n"
+    # self.z3_program+="\t\tmodels.append(m)\n"
+    # self.z3_program+="\t\tclauses = []\n"
+    # self.z3_program+=f"\t\tfor i in range({min_val}, {max_val + 1}):\n"
+    # self.z3_program+="\t\t\tval_at_i = m.evaluate(position(i))\n"
+    # self.z3_program+="\t\t\tclauses.append(position(i) == val_at_i)\n\n"
+    # self.z3_program+="\t\ts.add(Not(And(clauses)))\n"
+    # self.z3_program+="\treturn models"
     
 if __name__ == "__main__":
   s = """
 Domain: 
-1: Smallest 
-7: Largest 
+1: Lightest color
+7: Darkest color
 
 Variables: 
 var_1 [1, 2, 3, 4, 5, 6, 7]
@@ -263,19 +410,26 @@ var_6 [1, 2, 3, 4, 5, 6, 7]
 var_7 [1, 2, 3, 4, 5, 6, 7]
 
 Constraints: 
-var_2 > var_5 ::: var_2 is larger than var_5 
-var_3 < var_1 ::: var_3 is smaller than var_1
-var_4 < var_7 ::: var_4 is smaller than var_7
-var_6 > var_1 ::: var_6 is larger than var_1
-var_7 > var_3 ::: var_7 is larger than var_3
-var_1 > var_7 ::: var_1 is larger than var_7
-var_2 < var_6 ::: var_2 is smaller than var_6
-var_1 == 4 ::: var_1 is the third smallest 
+var_1 < var_3 ::: var_1 is lighter than var_3
+var_2 > var_5 ::: var_2 is darker than var_5
+var_4 < var_6 ::: var_4 is lighter than var_6
+var_7 > var_3 ::: var_7 is darker than var_3
+var_5 == 2 ::: var_5 is the second lightest color
+var_1 == 1 ::: var_1 is the lightest color
+var_7 == 7 ::: var_7 is the darkest color
 """
+  ans = """Statement (English): The first color is the lightest in the spectrum.
+
+Statement (Logic): position(1) == 1
+
+Analysis: 
+The statement is correct because in all solutions, the lightness of the first color is 1, which is the lightest in the spectrum."""
+
   a = Arrangement_Parser(s)
   s = a.find_possible_solutions()
-  print(f"possible solutions: {s}")
-  
+
+  print(f"ans: {a.check_answers(ans)}")
+  a.write_program_to_file()  
   
   # will LLAMA be able to generalize these to higher dimension arrangement problems?
   

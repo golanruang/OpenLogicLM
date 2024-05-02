@@ -25,11 +25,11 @@ var_4 == 2 ::: var_4 is the second from the left.
 
 Output: 
 In a high-stakes national car race, five racers are lined up on a five-lane track, each eager to clinch the title. The track lanes are numbered from 1 to 5 from left to right. Each racer's initial lane assignment directly impacts their strategy and ability to maneuver during the race. Racer Blake, known for their quick starts, is strategically positioned in lane 4, second from the right, allowing them a clear path along the outside. Meanwhile, racer Dana, recognized for their defensive driving, is placed in lane 2, second from the left, giving them a good vantage point to control the center of the race. Racer Casey is somewhere to the left of racer Erin, suggesting they might be in a more central or leftward position, while racer Erin, known for a strong finish, finds themselves leftward of Blake, which sets up an interesting dynamic as the race progresses. The positions of the racers dictate their initial tactics and the unfolding drama on the track, each aiming to leverage their lane to gain the upper hand.
-var_1: Position of racer Alex
-var_2: Position of racer Blake
-var_3: Position of racer Casey
-var_4: Position of racer Dana
-var_5: Position of racer Erin
+position(1): Position of racer Alex
+position(2): Position of racer Blake
+position(3): Position of racer Casey
+position(4): Position of racer Dana
+position(5): Position of racer Erin
 
 Template: 
 Domain: 
@@ -57,14 +57,13 @@ var_1 == 4 ::: var_1 is the third smallest
 
 Output: 
 In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
-var_1: Size of first celestial body 
-var_2: Size of second celestial body 
-var_3: Size of third celestial body 
-var_4: Size of fourth celestial body 
-var_5: Size of fifth celestial body 
-var_6: Size of sixth celestial body 
-var_7: Size of seventh celestial body
-
+position(1): Size of first celestial body 
+position(2): Size of second celestial body 
+position(3): Size of third celestial body 
+position(4): Size of fourth celestial body 
+position(5): Size of fifth celestial body 
+position(6): Size of sixth celestial body 
+position(7): Size of seventh celestial body
 ------
 Generate the output for the following template. Follow the exact syntax as the examples provided. 
 Template: 

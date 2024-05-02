@@ -1,20 +1,34 @@
-Task: Generate a set of five multiple choice answers with one correct answer and four incorrect answers. 
+Task: You are creating a statement that is either True or False given the context of an arrangement problem. 
 Inputs: 
 1) A question about the arrangement of several variables. 
 2) The meaning of the variables. 
 3) All solutions to the problem. 
 
-Analyze the question and solutions to generate five multiple choice answers with one correct answer and four incorrect answers. Write the solutions in english and in logic language.
+Analyze the question and solutions to generate one True or False question. Write the solutions in english and in logic language.
 
-The domain represents the position of the variables. For example, if the domain is 1: shortest 8: tallest and the height of Bob: 3 and height of Rick: 4, Rick is taller than Bob. 
+When generating the queries in logic form, be sure to follow the definitions provided. 
+
+For a correct answer, the answer should hold true for all solutions. 
+For an incorrect answer, the answer only needs to be not true for one solution.
 
 Here are some examples: 
 -------
 Input: 
 Question: In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
+
 Domain:
 1: Smallest
 7: Largest
+
+Definitions:
+position(1): Size of first celestial body 
+position(2): Size of second celestial body 
+position(3): Size of third celestial body 
+position(4): Size of fourth celestial body 
+position(5): Size of fifth celestial body 
+position(6): Size of sixth celestial body 
+position(7): Size of seventh celestial body
+
 Solution #1:
 Size of third celestial body: 2
 Size of fourth celestial body: 1
@@ -23,6 +37,7 @@ Size of sixth celestial body: 7
 Size of seventh celestial body: 3
 Size of first celestial body: 4
 Size of second celestial body: 6
+
 Solution #2:
 Size of second celestial body: 6
 Size of third celestial body: 1
@@ -33,18 +48,56 @@ Size of seventh celestial body: 3
 Size of first celestial body: 4
 
 Output: 
-A) The sixth celestial body is larger than the seventh celestial body. 
-B) The fifth celestial body is the fourth smallest celestial body. 
-C) The seventh celestial body is larger than the second celestial body. 
-D) The first celestial body is the largest celestial body. 
-E) The third celestial body is smaller than the first celestial body. 
+Statement (English): The second celestial body is larger than the seventh celestial body. 
 
-A) pos(6) < pos(7)
-B) pos(5) == 3
-C) pos(7) > pos(2)
-D) pos(1) == 7
-E) pos(3) < pos(1)
+Statement (Logic): position(2) > position(7)
 
 Analysis: 
-1. Answer A is incorrect because in solution #1, the size of 6 > the size of 7. 
-2. Answer B is incorrect because in solution #2, the size of 5 
+The statement is correct because in solution #1 and solution #2, the size of the second celestial body > the size of the seventh celestial body.
+
+To generate an incorrect query, find at least one solution where it is not satisfied. 
+To generate a correct query, make sure it is correct for ALL solutions. 
+
+Question: In a small town fair, four different varieties of pumpkins are on display for the annual pumpkin contest, each distinct in size. The sizes are ranked from 1 to 4, with 1 being the smallest and 4 the largest. The second variety is larger than the third, suggesting a more mature growth or a different species entirely. The first variety is smaller than the fourth, possibly indicating that the fourth variety is a late-season pumpkin, known for their larger sizes. Interestingly, the second variety is not the smallest, indicating a middle-range size, while the fourth variety, contrary to expectations, is not the largest. This fascinating array of pumpkins, each unique in size, draws the attention of both the townsfolk and the judges, setting the stage for an exciting contest. 
+Domain:
+1: Smallest
+4: Largest
+
+position(1): Size of first variety of pumpkin
+position(2): Size of second variety of pumpkin
+position(3): Size of third variety of pumpkin
+position(4): Size of fourth variety of pumpkin
+
+Solution #1:
+Size of the second variety of pumpkin: 4
+Size of the third variety of pumpkin: 2
+Size of the fourth variety of pumpkin: 3
+Size of the first variety of pumpkin: 1
+
+Solution #2:
+Size of the second variety of pumpkin: 4
+Size of the third variety of pumpkin: 1
+Size of the fourth variety of pumpkin: 3
+Size of the first variety of pumpkin: 2
+
+Solution #3:
+Size of the second variety of pumpkin: 4
+Size of the third variety of pumpkin: 3
+Size of the fourth variety of pumpkin: 2
+Size of the first variety of pumpkin: 1
+
+Output: 
+Statement (English): The first variety of pumpkin is the smallest. 
+
+Statement (Logic): position(1) == 1
+
+Analysis: 
+The statement is incorrect because in solution #2, the size of the first variety of pumpkin (2) is not the smallest. 
+
+To generate an incorrect query, find at least one solution where it is not satisfied. 
+To generate a correct query, make sure it is correct for ALL solutions.
+------
+Input: 
+[[TEMPLATE]]
+
+Output: 

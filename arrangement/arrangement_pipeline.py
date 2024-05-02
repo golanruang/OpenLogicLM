@@ -62,7 +62,7 @@ class Arrangement_Pipeline:
 
     def generate_template(self):
         """generate template using """
-        num_variables = random.randint(3, 8)
+        num_variables = random.randint(3, 7)
         template_path = "prompts/template_prompt.txt"
         try:
             with open(template_path, 'r') as file:
@@ -74,7 +74,6 @@ class Arrangement_Pipeline:
             print("An error occurred:", e)
             
         gpt_output = self.openai_api.generate(template, temperature=0.7)
-        print(gpt_output)
         return gpt_output
     
     def generate_context(self, template):
@@ -118,31 +117,22 @@ class Arrangement_Pipeline:
         return domain, max_val
     
     def parse_definitions(self, context):
-        """
-        In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
-        var_1: Size of first celestial body 
-        var_2: Size of second celestial body 
-        var_3: Size of third celestial body 
-        var_4: Size of fourth celestial body 
-        var_5: Size of fifth celestial body 
-        var_6: Size of sixth celestial body 
-        var_7: Size of seventh celestial body
-        """
         definitions = {}
         
         lines = [line.lstrip().strip() for line in context.split('\n') if line != '\n']
         for i in range(len(lines)):
-            if lines[i][:3] != "var":
+            print(f"lines[i]: {lines[i]}")
+            if lines[i][:9] != "position(":
                 continue 
             
             var, defn = lines[i].split(':')
+            print(f"var: {var}, defn: {defn}")
             var = var.lstrip().strip()
             defn = defn.lstrip().strip()
             underscore_pos = var.find('_')
             definitions[var[underscore_pos+1:]] = defn
             
         return definitions
-                
         
     def convert_solutions(self, solutions, template, context):
         """
@@ -191,6 +181,11 @@ class Arrangement_Pipeline:
         solutions_input = ""
         solutions_input += f"Question: {context}\n"
         solutions_input += f"Domain:\n{1}: {domain['1']}\n{num_variables}: {domain[str(num_variables)]}\n"
+        solutions_input += "Definitions:\n"
+        for k, v in definitions.items(): 
+            solutions_input += f"{k}: {v}\n"
+        
+        solutions_input += "\n"
         
         for i in range(n):
             solutions_input += f"Solution #{i+1}:\n"
@@ -213,32 +208,52 @@ class Arrangement_Pipeline:
                 
                 print(f"var: {var}, pos: {pos}")
                 
-                solutions_input += f"{definitions[var]}: {pos}\n"
+                solutions_input += f"{definitions[f'position({var})']}: {pos}\n"
                 variables.remove(int(var))
                 
         print(f"solutions_input: \n{solutions_input}")
-            
+        return solutions_input            
     
     def generate_data(self, path='./gpt_generated_data/data.json', n=1):
+        query_path = 'prompts/query_prompt.txt'
+        with open(query_path, 'r') as file: query_prompt = file.read()
+        
         for i in range(self.num_data):
             while True: 
+                # generate template until you get a template 
+                print(f"GENERATING TEMPLATE...")
                 template = self.generate_template()
+
                 a = Arrangement_Parser(template)
                 a.find_possible_solutions()
                 solutions = a.get_solutions()
-                z3 = a.get_z3_program()
-                if solutions and len(solutions) < 5:
+
+                if solutions and len(solutions) < 20:
                     break 
                 
-            context = self.generate_context(template)
+            print(f"template: {template}")
                 
-            print(f"solutions: {solutions}")
-            print(f"z3: {z3}")
-            print(f"context: {context}")
+            context = self.generate_context(template)
+            # print(f"context: {context}")
             
-            input_solutions = self.convert_solutions()
+            input_solutions = self.convert_solutions(solutions, template, context)
             
-        return 
+            query_prompt = query_prompt.replace('[[TEMPLATE]]', input_solutions)
+            # print(f"query_prompt: {query_prompt}")
+            
+            while True: 
+                print("GENERATING QUERIES...")
+                # check if only one query is correct 
+                statement = self.openai_api.generate(query_prompt)
+                
+                print(f"")
+                                
+                valid = a.check_answers(statement)
+            
+                if valid: 
+                    break 
+        
+        return
             
 
 def parse_args():
@@ -260,44 +275,10 @@ if __name__ == '__main__':
     path = './gpt_generated_data/data.json'
 
     p = Arrangement_Pipeline(args)
-    template = """
-Domain: 
-1: Smallest 
-7: Largest 
-
-Variables: 
-var_1 [1, 2, 3, 4, 5, 6, 7]
-var_2 [1, 2, 3, 4, 5, 6, 7]
-var_3 [1, 2, 3, 4, 5, 6, 7]
-var_4 [1, 2, 3, 4, 5, 6, 7]
-var_5 [1, 2, 3, 4, 5, 6, 7]
-var_6 [1, 2, 3, 4, 5, 6, 7]
-var_7 [1, 2, 3, 4, 5, 6, 7]
-
-Constraints: 
-var_2 > var_5 ::: var_2 is larger than var_5 
-var_3 < var_1 ::: var_3 is smaller than var_1
-var_4 < var_7 ::: var_4 is smaller than var_7
-var_6 > var_1 ::: var_6 is larger than var_1
-var_7 > var_3 ::: var_7 is larger than var_3
-var_1 > var_7 ::: var_1 is larger than var_7
-var_2 < var_6 ::: var_2 is smaller than var_6
-var_1 == 4 ::: var_1 is the third smallest 
-"""
-    context = """In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
-var_1: Size of first celestial body 
-var_2: Size of second celestial body 
-var_3: Size of third celestial body 
-var_4: Size of fourth celestial body 
-var_5: Size of fifth celestial body 
-var_6: Size of sixth celestial body 
-var_7: Size of seventh celestial body
-"""
-        
-    a = Arrangement_Parser(template)
-    s = a.find_possible_solutions()
-    p.convert_solutions(s, template, context)
+#     a = Arrangement_Parser(template)
+    # s = a.find_possible_solutions()
+    # p.convert_solutions(s, template, context)
     # p.generate_template()
-    # p.generate_data()
+    p.generate_data()
     
     # p.generate_data(path, 2)

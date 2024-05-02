@@ -51,7 +51,7 @@ One solution is the ordering [var_3, var_4, var_5, var_2, var_1]
 Template: 
 num_variables = 5
 ------
-In the following output, do NOT include analysis. Follow the exact syntax as the examples provided.
+In the following output, do NOT include analysis. Follow the exact syntax as the examples provided. Add as many constraints as possible while still making a valid question.
 
 Template: 
 [[TEMPLATE]]
