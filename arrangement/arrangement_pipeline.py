@@ -122,6 +122,7 @@ class Arrangement_Pipeline:
         definitions = {}
         
         lines = [line.lstrip().strip() for line in context.split('\n') if line != '\n']
+        
         for i in range(len(lines)):
             print(f"lines[i]: {lines[i]}")
             if lines[i][:9] != "position(":
@@ -154,17 +155,6 @@ class Arrangement_Pipeline:
         
         ...
         """
-        """
-        Domain:
-        1: leftmost
-        5: rightmost
-        
-        var_1: Position of racer Alex
-        var_2: Position of racer Blake
-        var_3: Position of racer Casey
-        var_4: Position of racer Dana
-        var_5: Position of racer Erin
-        """
         # get the domain 
         domain, num_variables = self.parse_domain(template)
         print(f"domain: {domain}")
@@ -176,12 +166,15 @@ class Arrangement_Pipeline:
         
         print(f"solutions: {solutions}")
         
-        context = context.split('\n')[0]
+        context = [line for line in context.split('\n') if line.strip()]
+        
+        context, premises = context[0], context[1]
         
         n = len(solutions)
         
         solutions_input = ""
-        solutions_input += f"Question: {context}\n"
+        solutions_input += f"{context}\n"
+        solutions_input += f"{premises}\n"
         solutions_input += f"Domain:\n{1}: {domain['1']}\n{num_variables}: {domain[str(num_variables)]}\n"
         solutions_input += "Definitions:\n"
         for k, v in definitions.items(): 
@@ -236,28 +229,54 @@ class Arrangement_Pipeline:
             print(f"template: {template}")
                 
             context = self.generate_context(template)
-            # print(f"context: {context}")
+            # change context to be context and premises
+            print(f"context: {context}")
             
             input_solutions = self.convert_solutions(solutions, template, context)
             
             query_prompt = query_prompt.replace('[[TEMPLATE]]', input_solutions)
             # print(f"query_prompt: {query_prompt}")
             
-            while True: 
-                print("GENERATING QUERIES...")
-                # check if only one query is correct 
-                statement = self.openai_api.generate(query_prompt)
-                
-                print(f"")
-                                
-                valid = a.check_answers(statement)
+            print("GENERATING QUERY...")
+            statement = self.openai_api.generate(query_prompt)
             
-                if valid: 
-                    break 
+            print("")
+                            
+            answer = a.check_answers(statement)
+            print(f"statement: {statement}")
+            print(f"answer: {answer}")
+        
+        z3_program = a.get_z3_program() 
+        
+        self.write_data(context, statement, answer, z3_program)
         
         return
     
+    def parse_context(self, context):
+        """In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
+position(1): Size of first celestial body 
+position(2): Size of second celestial body 
+position(3): Size of third celestial body 
+position(4): Size of fourth celestial body 
+position(5): Size of fifth celestial body 
+position(6): Size of sixth celestial body 
+position(7): Size of seventh celestial body"""
+        pass 
+
     
+    def write_data(self, context, statement, answer, z3_program):
+        """
+        id, type, context, nl_premises, sym_premises, nl_query, sym_query, label, z3_program
+        """
+        # TODO: parse context into nl_premises, sym_premises
+        today = date.today()
+        f = f'/arrangement/data/{today}.json'
+        
+        output = {}
+        output['id'] = str(uuid.uuid4())
+        output['type'] = 'Arrangement'
+        # output['context'] = self   
+        pass
             
 
 def parse_args():
@@ -285,8 +304,4 @@ if __name__ == '__main__':
     # p.generate_template()
     p.generate_data()
     
-    today = date.today()
-    
-    p.write_output(f'/arrangement/data/{today}')
-    
-    # p.generate_data(path, 2)
+    # today = date.today()

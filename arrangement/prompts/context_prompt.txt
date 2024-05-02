@@ -1,5 +1,5 @@
 Task description: Given a problem template, provide a real world context for the problem.
-1. Assign meanings to each variable/
+1. Assign meanings to each variable
 2. Describe how the variables are related to each other using the provided domain.
 3. Be creative with the context.
 
@@ -24,7 +24,8 @@ var_2 == 4 ::: var_2 is the second from the right.
 var_4 == 2 ::: var_4 is the second from the left. 
 
 Output: 
-In a high-stakes national car race, five racers are lined up on a five-lane track, each eager to clinch the title. The track lanes are numbered from 1 to 5 from left to right. Each racer's initial lane assignment directly impacts their strategy and ability to maneuver during the race. Racer Blake, known for their quick starts, is strategically positioned in lane 4, second from the right, allowing them a clear path along the outside. Meanwhile, racer Dana, recognized for their defensive driving, is placed in lane 2, second from the left, giving them a good vantage point to control the center of the race. Racer Casey is somewhere to the left of racer Erin, suggesting they might be in a more central or leftward position, while racer Erin, known for a strong finish, finds themselves leftward of Blake, which sets up an interesting dynamic as the race progresses. The positions of the racers dictate their initial tactics and the unfolding drama on the track, each aiming to leverage their lane to gain the upper hand.
+Context: In a high-stakes national car race, five racers are lined up on a five-lane track, each eager to clinch the title. The track lanes are numbered from 1 to 5 from left to right. Each racer's initial lane assignment directly impacts their strategy and ability to maneuver during the race. 
+Premises: Racer Blake, known for their quick starts, is strategically positioned in lane 4, second from the right, allowing them a clear path along the outside. Meanwhile, racer Dana, recognized for their defensive driving, is placed in lane 2, second from the left, giving them a good vantage point to control the center of the race. Racer Casey is somewhere to the left of racer Erin, suggesting they might be in a more central or leftward position, while racer Erin, known for a strong finish, finds themselves leftward of Blake, which sets up an interesting dynamic as the race progresses. The positions of the racers dictate their initial tactics and the unfolding drama on the track, each aiming to leverage their lane to gain the upper hand.
 position(1): Position of racer Alex
 position(2): Position of racer Blake
 position(3): Position of racer Casey
@@ -56,7 +57,8 @@ var_2 < var_6 ::: var_2 is smaller than var_6
 var_1 == 4 ::: var_1 is the third smallest 
 
 Output: 
-In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
+Context: In a newly discovered solar system called Zeta, astronomers have identified seven celestial bodies of varying sizes, each with unique characteristics. These bodies include three planets, three moons, and a central star. The size of each celestial body has been recorded, establishing a clear hierarchy from smallest to largest. 
+Premises: The constraints indicate the relative dimensions: the second celestial body is larger than the fifth, suggesting a moon larger than one of the smaller planets. The third body is smaller than the first, likely a smaller moon orbiting a larger planet. The fourth celestial body is smaller than the seventh, indicating perhaps a moon compared to the system's central star. The sixth celestial body is larger than the first, possibly a larger planet dominating a smaller neighboring one. Lastly, the seventh body, the star, is larger than the third, solidifying its status as the central and most massive object in this system. This classification aids in understanding the physical dynamics and potential habitability of planets within the Zeta system.
 position(1): Size of first celestial body 
 position(2): Size of second celestial body 
 position(3): Size of third celestial body 
