@@ -48,6 +48,8 @@ import argparse
 import random
 import re
 
+from datetime import date
+
 class Arrangement_Pipeline:
     def __init__(self, args):
         self.templates = []
@@ -254,6 +256,8 @@ class Arrangement_Pipeline:
                     break 
         
         return
+    
+    
             
 
 def parse_args():
@@ -280,5 +284,9 @@ if __name__ == '__main__':
     # p.convert_solutions(s, template, context)
     # p.generate_template()
     p.generate_data()
+    
+    today = date.today()
+    
+    p.write_output(f'/arrangement/data/{today}')
     
     # p.generate_data(path, 2)

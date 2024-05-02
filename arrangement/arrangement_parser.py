@@ -35,7 +35,6 @@ class Arrangement_Parser:
     self.write_inits()
     self.create_variables()
     self.create_constraints()
-    self.write_end()
     
   def get_z3_program(self):
     return self.z3_program
@@ -58,10 +57,8 @@ class Arrangement_Parser:
     
     for i in range(min_num, max_num):
       self.base_constraints.append(Or([self.position(i) == pos for pos in range(min_num, max_num)]))
-      # self.s.add(Or([self.position(i) == pos for pos in range(min_num, max_num)]))
-      # self.query_s.add(Or([self.position(i) == pos for pos in range(min_num, max_num)]))
 
-    self.z3_program+="\tfor i in range(%d, %d):\n" % (min_num, max_num)
+    self.z3_program+="for i in range(%d, %d):\n" % (min_num, max_num)
 
     
     s = ""
@@ -71,7 +68,7 @@ class Arrangement_Parser:
       s+="position(i)==%d, " % i
 
     s = s[:-2]
-    self.z3_program += "\t\tconstraints.append(Or(%s))\n" % s
+    self.z3_program += "\tclauses.append(Or(%s))\n\n" % s
 
   def create_constraints(self):
     """
@@ -92,8 +89,8 @@ class Arrangement_Parser:
       # self.s.add(self.position(comb[0])!= self.position(comb[1]))
       # self.query_s.add(self.position(comb[0])!= self.position(comb[1]))
       
-    self.z3_program+="\tfor comb in combinations(range(%d, %d), 2):\n" % (min_key, max_key)
-    self.z3_program+="\t\tconstraints.append(position(comb[0])!= position(comb[1]))\n"
+    self.z3_program+="for comb in combinations(range(%d, %d), 2):\n" % (min_key, max_key)
+    self.z3_program+="\tclauses.append(position(comb[0])!= position(comb[1]))\n\n"
 
     for constraint in self.constraints:
       s1, sym, s2 = constraint.split(" ")
@@ -107,7 +104,9 @@ class Arrangement_Parser:
         s2 = "position(%s)" % self.name_to_num[s2]
 
       converted+="%s %s %s" % (s1, sym, s2)
-      self.z3_program+="\tconstraints.append(%s)\n" % converted
+      self.z3_program+="clauses.append(%s)\n" % converted
+      
+    self.z3_program += "\n"
 
   def add_constraint(self, s1, s2, s1_var, s2_var, sym):
     """
@@ -233,11 +232,7 @@ class Arrangement_Parser:
       logic = answer.split(':')[1].lstrip().strip()
       print(f"logic: {logic}")
       s1, sym, s2 = logic.split(" ")
-      self.z3_program += f"\tconstraints.append(Not({s1} {sym} {s2}))\n"
-      self.z3_program += f"\ts = Solver()\n"
-      self.z3_program += f"\tfor c in constraints: s.add(c)\n"
-      self.z3_program += f"\tif s.check() == unsat: return True\n"
-      self.z3_program += f"\telse: return False\n"
+      self.z3_program += f"conclusion = Not({s1} {sym} {s2})\n\n"
       
       pos_in_s1 = s1.find('position(')
       pos_in_s2 = s2.find('position(')
@@ -268,69 +263,9 @@ class Arrangement_Parser:
         return False
     
     return None  
-    
-    # start = answers.find("(Logic)")
-    
-    # answers = answers[start:]
-    # end = answers.find('Analysis:')
-    # answers = answers[:end].strip()
-    # answers = answers.split('\n')
-    
-    # print(f"answers: {answers}")
-    # correct = []
-    # incorrect = []
-    # num_correct = 0
-    # num_incorrect = 0
-    
-    # for line in answers: 
-    #   q, s1, sym, s2 = line.split(" ")
-    #   self.z3_program += f"\t# check answer {q}\n"
-    #   self.z3_program += f"\tconstraints.append(Not({s1} {sym} {s2}))\n"
-    #   self.z3_program += f"\ts = Solver()\n"
-    #   self.z3_program += f"\tfor c in constraints: s.add(c)\n"
-    #   self.z3_program += f"\tif s.check() == unsat: return \"{q[0]}\"\n"
-    #   self.z3_program += f"\tconstraints.pop()\n"
-    #   print(f"q: {q}, s1: {s1}, sym: {sym}, s2: {s2}")
-      
-    #   # for every answer, insert not(constraint) into the model 
-    #   pos_in_s1 = s1.find('position(')
-    #   pos_in_s2 = s2.find('position(')
-    #   s1_var, s2_var = False, False
-    #   if pos_in_s1 != -1: 
-    #     # if it's a pos(x)
-    #     s1_var = True 
-    #     paren = s1.find('position(') + 9
-    #     s1 = s1[paren]
-        
-    #   if pos_in_s2 != -1: 
-    #     s2_var = True 
-    #     paren = s2.find('position(') + 9
-    #     s2 = s2[paren]
-        
-    #   s1, s2 = int(s1), int(s2)
-        
-    #   print(f"s1: {s1}, s2: {s2}, s1_var: {s1_var}, s2_var: {s2_var}")
-      
-    #   s = Solver() 
-    #   for c in self.base_constraints: s.add(c)
-    #   c = self.add_constraint(s1, s2, s1_var, s2_var, sym)
-    #   s.add(Not(c))
-      
-    #   if s.check() == unsat: 
-    #     num_correct += 1
-    #     correct.append(q)
-    #   else: 
-    #     num_incorrect += 1
-    #     incorrect.append(q)
-        
-    # print(f"num_correct: {num_correct}, num_incorrect: {num_incorrect}")
-    # print(f"correct: {correct}")
-    # print(f"incorrect: {incorrect}")
-    
-    # if num_correct == 1 and num_incorrect == 4:
-    #   return True 
   
   def write_program_to_file(self):
+    self.write_end()
     self.f.write(self.z3_program)
     return 
 
@@ -375,24 +310,17 @@ class Arrangement_Parser:
 
   def write_inits(self):
     self.z3_program+="from z3 import *\n"
-    self.z3_program+="from itertools import combinations\n"
-    self.z3_program+="def solve_arrangement():\n"
-    self.z3_program+="\tconstraints = []\n"
-    self.z3_program+="\tposition = Function(\"pos\", IntSort(), IntSort())\n"
+    self.z3_program+="from itertools import combinations\n\n"
+    self.z3_program+="position = Function(\"pos\", IntSort(), IntSort())\n"
+    self.z3_program+="clauses = []\n\n"
     
   def write_end(self):
-    min_val = min(self.num_to_name.keys())
-    max_val = max(self.num_to_name.keys())
-    # self.z3_program+="\tmodels = []\n"
-    # self.z3_program+="\twhile s.check() == sat:\n"
-    # self.z3_program+="\t\tm = s.model()\n"
-    # self.z3_program+="\t\tmodels.append(m)\n"
-    # self.z3_program+="\t\tclauses = []\n"
-    # self.z3_program+=f"\t\tfor i in range({min_val}, {max_val + 1}):\n"
-    # self.z3_program+="\t\t\tval_at_i = m.evaluate(position(i))\n"
-    # self.z3_program+="\t\t\tclauses.append(position(i) == val_at_i)\n\n"
-    # self.z3_program+="\t\ts.add(Not(And(clauses)))\n"
-    # self.z3_program+="\treturn models"
+    self.z3_program+="""def is_valid(clauses, conclusion):
+    solver = Solver()
+    solver.add(clauses)
+    solver.add(Not(conclusion))
+    return solver.check() == unsat\n\n"""
+    self.z3_program+="ans = is_valid(clauses, conclusion)"
     
 if __name__ == "__main__":
   s = """
