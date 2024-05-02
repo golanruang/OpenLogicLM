@@ -1,11 +1,14 @@
+import sys
+sys.path.append('../')
+
 import json
-from openai_utils import OpenAIModel
+from utils.openai_utils import OpenAIModel
 import os
 import random
 from tqdm import tqdm
 import uuid
 import argparse
-from config import api_key
+from utils.config import api_key
 
 class Direct_FOL_Problem_Generator:
     def __init__(self, args):

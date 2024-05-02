@@ -1,6 +1,7 @@
 [
     {
         "id": "49780b89-f61a-4271-8b6c-b5643b6ffcb6",
+        "type": "FOL", 
         "nl_premises": [
             "Penguins are birds.",
             "Penguins do not fly.",

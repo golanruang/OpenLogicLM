@@ -1,8 +1,11 @@
-from fol_generator import Direct_FOL_Problem_Generator, parse_args
-from fol_parser import FOL_Parser
-from config import api_key
+import sys
+sys.path.append('../')
+
+from FOL_Generator.fol_generator import Direct_FOL_Problem_Generator, parse_args
+from FOL_Generator.fol_parser import FOL_Parser
+from utils.config import api_key
 from datetime import date
-from z3_program_parser import Z3_FOL_Program
+from FOL_Generator.z3_program_parser import Z3_FOL_Program
 from collections import defaultdict
 
 import json
@@ -84,6 +87,8 @@ class FOL_Pipeline:
         self.output['id'] = datapt['id']
         # output['premises'].append(datapt["seed_sent"])
         # output['fol_premises'].append(datapt['seed_fol'])
+        
+        self.output['type'] = 'First-Order-Logic'
         self.parse_raw_fol(datapt["raw_fol_problem"])
 
         self.parse_preds()
@@ -93,6 +98,8 @@ class FOL_Pipeline:
         z3_program = Z3_FOL_Program(pass_to_z3_parser)
         answer = z3_program.execute()
         self.output['label'] = answer
+        
+        z3_program.z3_program.replace('\n\n\n\n\n', '\n\n\n')
         self.output['z3_program'] = z3_program.z3_program
 
     def parse_raw_fol(self, raw_fol):
@@ -130,23 +137,15 @@ class FOL_Pipeline:
             content = content.strip()
 
             if QUERY_FOL: 
-                self.output["fol_query"] = content
+                self.output["sym_query"] = content
                 QUERY_FOL = False
             elif section_type.lower() == "sentence": 
                 self.output["nl_premises"].append(content)
             elif section_type.lower() == "fol":
-                self.output["fol_premises"].append(content)
-                # predicate_parsed = content.split("x")
-                # for entry in predicate_parsed: 
-                #     if entry[-1] == "(":
-                #         pred = ''.join(char for char in entry if char.isalpha())
-                #         # print(f"pred: {pred}")
-                #         formatted_pred = pred + "(x)"
-                #         predicates.add(formatted_pred)
+                self.output["sym_premises"].append(content)
             elif section_type.lower() == "query":
                 self.output["nl_query"] = content
                 QUERY_FOL = True
-            # NOTE: should output['label'] be the label of the gpt or z3 program? 
             elif section_type.lower() == "label":
                 self.output["label"] = content
             else:
@@ -159,7 +158,7 @@ class FOL_Pipeline:
         # use fol_parser to check if it's a valid FOL program
         predicates = set()
 
-        for statement in self.output["fol_premises"]:
+        for statement in self.output["sym_premises"]:
             tree = self.fol_parser.parse_text_FOL_to_tree(statement)
             isFOL, lvars, consts, preds = self.fol_parser.symbol_resolution(tree)
             # if not isFOL: 
@@ -180,8 +179,8 @@ class FOL_Pipeline:
         pass_to_z3_parser = {}
 
         pass_to_z3_parser['predicates'] = self.output['predicates']
-        pass_to_z3_parser['clauses'] = self.output['fol_premises']
-        pass_to_z3_parser['conclusion'] = self.output['fol_query']
+        pass_to_z3_parser['clauses'] = self.output['sym_premises']
+        pass_to_z3_parser['conclusion'] = self.output['sym_query']
         
         return pass_to_z3_parser
 

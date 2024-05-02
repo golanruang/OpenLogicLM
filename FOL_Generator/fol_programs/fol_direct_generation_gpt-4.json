@@ -1,82 +1,18 @@
 [
   {
-    "id": "6bc642db-c4d7-4308-85ae-6182249560ca",
+    "id": "18ab2e9c-648b-4462-b018-7954a798fb40",
     "seed_sent": "All birds have wings and feathers.",
     "seed_fol": "∀x (Bird(x) → (HasWings(x) ∧ HasFeathers(x)))",
     "raw_fol_problem": [
-      "Sentence: Penguins are birds.\nFOL: Bird(penguin)\n\nSentence: Penguins do not fly.\nFOL: ¬Fly(penguin)\n\nSentence: Animals that fly must have wings.\nFOL: ∀x ((Animal(x) ∧ Fly(x)) → HasWings(x))\n\nQuery: Penguins have wings.\nFOL: HasWings(penguin)\n\nLabel: TRUE"
+      "Sentence: Penguins are birds.\nFOL: Bird(penguins)\n\nSentence: Penguins do not fly.\nFOL: ¬Fly(penguins)\n\nSentence: Animals that fly must have wings.\nFOL: ∀x (Animal(x) ∧ Fly(x) → HasWings(x))\n\nQuery: Penguins have wings.\nFOL: HasWings(penguins)\n\nLabel: TRUE"
     ]
   },
   {
-    "id": "89e88fb1-7094-4397-bdb7-1f45bd5ee19c",
+    "id": "4d754442-446e-4f02-a96c-3aee499f1762",
     "seed_sent": "A mammal can be either a herbivore or a carnivore, but not both.",
     "seed_fol": "∀x (Mammal(x) → (Herbivore(x) ⊕ Carnivore(x)))",
     "raw_fol_problem": [
-      "Sentence: A lion is a mammal.\nFOL: Mammal(lion)\n\nSentence: A lion is a carnivore.\nFOL: Carnivore(lion)\n\nSentence: A rabbit is a mammal.\nFOL: Mammal(rabbit)\n\nSentence: A rabbit is a herbivore.\nFOL: Herbivore(rabbit)\n\nQuery: A lion is a herbivore.\nFOL: Herbivore(lion)\n\nLabel: FALSE"
-    ]
-  },
-  {
-    "id": "0097f91a-328a-46c8-8534-7e9075b2d07e",
-    "seed_sent": "A place is considered a theater if it hosts live performances, such as plays, musicals, or concerts.",
-    "seed_fol": "∀x (Place(x) ∧ HostsLivePerformances(x) ∧ (Plays(x) ∨ Musicals(x) ∨ Concerts(x)) → Theater(x))",
-    "raw_fol_problem": [
-      "Sentence: The Sydney Opera House hosts live performances of plays, musicals, and concerts.\nFOL: Place(sydneyOperaHouse) ∧ HostsLivePerformances(sydneyOperaHouse) ∧ Plays(sydneyOperaHouse) ∧ Musicals(sydneyOperaHouse) ∧ Concerts(sydneyOperaHouse)\n\nSentence: The Sydney Opera House is located in Australia.\nFOL: LocatedIn(sydneyOperaHouse, australia)\n\nSentence: Australia is a country in the Southern Hemisphere.\nFOL: Country(australia) ∧ InSouthernHemisphere(australia)\n\nQuery: There is a theater in the Southern Hemisphere.\nFOL: ∃x (Theater(x) ∧ InSouthernHemisphere(x))\n\nLabel: TRUE"
-    ]
-  },
-  {
-    "id": "4d204a2c-2f34-45d7-8846-6ef2253af419",
-    "seed_sent": "A destination is a tourist attraction if it features historical landmarks, natural wonders, or unique cultural experiences.",
-    "seed_fol": "∀x (Destination(x) ∧ (HistoricalLandmarks(x) ∨ NaturalWonders(x) ∨ UniqueCulturalExperiences(x)) → TouristAttraction(x))",
-    "raw_fol_problem": [
-      "Sentence: The Grand Canyon is a destination with natural wonders.\nFOL: Destination(grandCanyon) ∧ NaturalWonders(grandCanyon)\n\nSentence: The Louvre Museum is a destination with historical landmarks.\nFOL: Destination(louvreMuseum) ∧ HistoricalLandmarks(louvreMuseum)\n\nSentence: The city of Venice is a destination with unique cultural experiences.\nFOL: Destination(venice) ∧ UniqueCulturalExperiences(venice)\n\nQuery: The Grand Canyon, the Louvre Museum, and the city of Venice are tourist attractions.\nFOL: TouristAttraction(grandCanyon) ∧ TouristAttraction(louvreMuseum) ∧ TouristAttraction(venice)\n\nLabel: TRUE"
-    ]
-  },
-  {
-    "id": "9122188c-f4ed-4658-b78d-4e87b7d54e11",
-    "seed_sent": "A successful entrepreneur possesses effective leadership skills, the ability to make sound decisions, and resilience in the face of adversity.",
-    "seed_fol": "∀x (Entrepreneur(x) ∧ EffectiveLeadershipSkills(x) ∧ SoundDecisionMaking(x) ∧ ResilienceInAdversity(x) → Successful(x))",
-    "raw_fol_problem": [
-      "Sentence: John is a successful entrepreneur.\nFOL: Successful(john) ∧ Entrepreneur(john)\n\nSentence: Successful entrepreneurs are wealthy.\nFOL: ∀x (Successful(x) ∧ Entrepreneur(x) → Wealthy(x))\n\nSentence: Wealthy people own at least one luxury car.\nFOL: ∀x (Wealthy(x) → OwnsLuxuryCar(x))\n\nQuery: John owns a luxury car.\nFOL: OwnsLuxuryCar(john)\n\nLabel: TRUE"
-    ]
-  },
-  {
-    "id": "b39ef14e-7565-4e48-86e3-133d9d437b0c",
-    "seed_sent": "Not every movie has a happy ending.",
-    "seed_fol": "¬∀x (Movie(x) → HappyEnding(x))",
-    "raw_fol_problem": [
-      "Sentence: Titanic is a movie.\nFOL: Movie(titanic)\n\nSentence: Titanic does not have a happy ending.\nFOL: ¬HappyEnding(titanic)\n\nSentence: The Lion King is a movie.\nFOL: Movie(lionKing)\n\nSentence: The Lion King has a happy ending.\nFOL: HappyEnding(lionKing)\n\nQuery: There is a movie that does not have a happy ending.\nFOL: ∃x (Movie(x) ∧ ¬HappyEnding(x))\n\nLabel: TRUE"
-    ]
-  },
-  {
-    "id": "df993706-e5ef-4d2b-a468-cab9f8236564",
-    "seed_sent": "A scientific experiment is groundbreaking if it produces new findings and has a significant impact, or if it changes the course of research, but not if it is based on outdated methods.",
-    "seed_fol": "∀x (ScientificExperiment(x) → (Groundbreaking(x) ↔ (((NewFindings(x) ∧ SignificantImpact(x)) ∨ ChangesResearchCourse(x)) ∧ ¬OutdatedMethods(x))))",
-    "raw_fol_problem": [
-      "Sentence: The Higgs Boson discovery was a scientific experiment that produced new findings and had a significant impact.\nFOL: ScientificExperiment(higgsBosonDiscovery) ∧ NewFindings(higgsBosonDiscovery) ∧ SignificantImpact(higgsBosonDiscovery)\n\nSentence: The Higgs Boson discovery did not change the course of research.\nFOL: ¬ChangesResearchCourse(higgsBosonDiscovery)\n\nSentence: The Higgs Boson discovery was not based on outdated methods.\nFOL: ¬OutdatedMethods(higgsBosonDiscovery)\n\nQuery: The Higgs Boson discovery was a groundbreaking scientific experiment.\nFOL: Groundbreaking(higgsBosonDiscovery)\n\nLabel: TRUE"
-    ]
-  },
-  {
-    "id": "140b9fa7-83e2-4569-a5dc-fd698c0b76a6",
-    "seed_sent": "A mountain is taller than a hill, and both are landforms.",
-    "seed_fol": "∀x∀y (Mountain(x) ∧ Hill(y) → (Taller(x, y) ∧ Landform(x) ∧ Landform(y)))",
-    "raw_fol_problem": [
-      "Sentence: Everest is a mountain.\nFOL: Mountain(everest)\n\nSentence: A landform cannot be both a mountain and a hill.\nFOL: ¬∃x (Mountain(x) ∧ Hill(x))\n\nSentence: A landform that is not a mountain is a hill.\nFOL: ∀x (Landform(x) ∧ ¬Mountain(x) → Hill(x))\n\nQuery: Everest is taller than any hill.\nFOL: ∀x (Hill(x) → Taller(everest, x))\n\nLabel: TRUE"
-    ]
-  },
-  {
-    "id": "a4fceb6d-05ef-4e22-9d49-b181558a3f89",
-    "seed_sent": "A painter applies paint to a surface, creating artwork, which can be displayed in a gallery.",
-    "seed_fol": "∀x∀y∀z∀w (Painter(x) ∧ Paint(y) ∧ Surface(z) ∧ Gallery(w) → (AppliesTo(x, y, z) ∧ CreatesArtwork(x, z) ∧ CanBeDisplayedIn(z, w)))",
-    "raw_fol_problem": [
-      "Sentence: Picasso was a painter.\nFOL: Painter(picasso)\n\nSentence: Picasso created the artwork \"Guernica\" on a canvas.\nFOL: Artwork(guernica) ∧ Canvas(c) ∧ CreatesArtwork(picasso, guernica) ∧ AppliesTo(picasso, paint, c)\n\nSentence: \"Guernica\" is displayed in the Reina Sofia Museum.\nFOL: Museum(reinaSofia) ∧ CanBeDisplayedIn(guernica, reinaSofia)\n\nQuery: Picasso's artwork can be displayed in a museum.\nFOL: ∃x∃y (Painter(picasso) ∧ Artwork(x) ∧ Museum(y) ∧ CreatesArtwork(picasso, x) ∧ CanBeDisplayedIn(x, y))\n\nLabel: TRUE"
-    ]
-  },
-  {
-    "id": "f6a9ab15-adc1-4383-aab0-8ccab6008e47",
-    "seed_sent": "A student passes an exam if they study diligently, understand the material, and complete the exam, unless they are caught cheating.",
-    "seed_fol": "∀x (Student(x) ∧ ((StudyDiligently(x) ∧ UnderstandMaterial(x) ∧ CompleteExam(x)) ∧ ¬CaughtCheating(x) → PassExam(x)))",
-    "raw_fol_problem": [
-      "Sentence: John is a student who studied diligently, understood the material, completed the exam, and was not caught cheating.\nFOL: Student(john) ∧ StudyDiligently(john) ∧ UnderstandMaterial(john) ∧ CompleteExam(john) ∧ ¬CaughtCheating(john)\n\nSentence: Mary is a student who studied diligently, understood the material, but did not complete the exam.\nFOL: Student(mary) ∧ StudyDiligently(mary) ∧ UnderstandMaterial(mary) ∧ ¬CompleteExam(mary)\n\nSentence: Tom is a student who studied diligently, understood the material, completed the exam, but was caught cheating.\nFOL: Student(tom) ∧ StudyDiligently(tom) ∧ UnderstandMaterial(tom) ∧ CompleteExam(tom) ∧ CaughtCheating(tom)\n\nQuery: John passed the exam.\nFOL: PassExam(john)\n\nLabel: TRUE\n\nQuery: Mary passed the exam.\nFOL: PassExam(mary)\n\nLabel: FALSE\n\nQuery: Tom passed the exam.\nFOL: PassExam(tom)\n\nLabel: FALSE"
+      "Sentence: Elephants are mammals.\nFOL: ∀x (Elephant(x) → Mammal(x))\n\nSentence: Elephants eat plants.\nFOL: ∀x (Elephant(x) → Herbivore(x))\n\nSentence: Lions are mammals.\nFOL: ∀x (Lion(x) → Mammal(x))\n\nSentence: Lions eat meat.\nFOL: ∀x (Lion(x) → Carnivore(x))\n\nQuery: An elephant is a carnivore.\nFOL: ∃x (Elephant(x) ∧ Carnivore(x))\n\nLabel: FALSE"
     ]
   }
 ]
