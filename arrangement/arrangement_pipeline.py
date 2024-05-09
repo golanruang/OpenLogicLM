@@ -16,8 +16,9 @@ from datetime import date
 
 class Arrangement_Pipeline:
     def __init__(self, args):
-        self.templates = []
-        self.num_data = 1
+        self.num_data = args.num_of_examples
+        
+        self.save_path = args.save_path
 
         self.datapoints = []
         self.data_per_template = 1 # for each template, generate n problems
@@ -170,7 +171,7 @@ class Arrangement_Pipeline:
         query_path = 'prompts/query_prompt.txt'
         with open(query_path, 'r') as file: query_prompt = file.read()
         
-        for i in range(self.num_data):
+        for _ in range(self.num_data):
             while True: 
                 # generate template until you get a template 
                 print(f"GENERATING TEMPLATE...")
@@ -201,13 +202,13 @@ class Arrangement_Pipeline:
             a.create_base_constraints()
             
             input_solutions = self.convert_solutions(solutions, template, context, label)
+            print(f"INPUT SOLUTIONS: {input_solutions}")
             
-            query_prompt = query_prompt.replace('[[TEMPLATE]]', input_solutions)
-            # print(f"query_prompt: {query_prompt}")
-            with open('query_prompt_test.txt', 'w') as file: file.write(query_prompt)
+            query_prompt_tmp = query_prompt.replace('[[TEMPLATE]]', input_solutions)
+            with open('query_prompt_test.txt', 'w') as file: file.write(query_prompt_tmp)
             
             print("GENERATING QUERY...")
-            conclusion = self.openai_api.generate(query_prompt)
+            conclusion = self.openai_api.generate(query_prompt_tmp)
             nl_conclusion, logic_conclusion = self.parse_conclusion(conclusion)
             
             with open('conclusion_test.txt', 'w') as file: file.write(logic_conclusion)
@@ -284,13 +285,10 @@ var_5 > var_3 ::: var_5 is more important than var_3.
             output_premises.append(f"{statement}\n")
             
         sym_premises = ''.join(output_premises).lstrip().strip()
-        # print(f"sym_premises: {sym_premises}")
         
         output_context = ""
         output_premise = ""
-        
-        # print(f"context: {context}")
-        
+                
         for line in context.split('\n'):
             lower_line = line.lower()
             if lower_line.startswith('context'):
@@ -323,7 +321,7 @@ var_5 > var_3 ::: var_5 is more important than var_3.
         id, type, context, nl_premises, sym_premises, nl_query, sym_query, label, z3_program
         """
         today = date.today()
-        f = f'./data/{today}.json'
+        f = f'{self.save_path}/{today}.json'
         
         output = {}
         output['id'] = str(uuid.uuid4())
@@ -354,12 +352,12 @@ var_5 > var_3 ::: var_5 is more important than var_3.
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_of_examples', type=int, default=5)
-    parser.add_argument('--save_path', type=str, default='./fol_programs')
-    parser.add_argument('--api_key', type=str)
+    parser.add_argument('--save_path', type=str, default='./arrangement_data')
     parser.add_argument('--model_name', type=str, default='text-davinci-003')
     parser.add_argument('--stop_words', type=str, default='------')
     parser.add_argument('--max_new_tokens', type=int, default=1024)
-    parser.add_argument('--num_variables', type)                              # add arg for range of variables
+    parser.add_argument('--num_variables', type=int, default=5)
+    parser.add_argument('--label', type=bool, default=True)
     
     args = parser.parse_args()
     return args
@@ -371,5 +369,4 @@ if __name__ == '__main__':
     path = './gpt_generated_data/data.json'
 
     a = Arrangement_Pipeline(args)
-    n = random.randint(3, 7)
-    a.generate_data(n, True)
+    a.generate_data(args.num_variables, args.label)

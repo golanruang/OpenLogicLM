@@ -1,0 +1,101 @@
+[
+    {
+        "id": "0b08bdcd-956d-4db1-9f1d-8cdac84182b4",
+        "type": "Arrangement",
+        "context": "In a colony of five dolphins, marine biologists are observing their intelligence levels. Dolphins are known for their complex social structures and behaviors, suggesting varying degrees of intelligence. The scientists have ranked the dolphins on a scale of 1 to 5, where 1 indicates the least intelligent and 5 the most intelligent.",
+        "nl_premises": "Dolphin Bella, known for her quick learning, is more intelligent than Dolphin Andy, who is still mastering basic skills. Dolphin Charlie is less intelligent than Dolphin Ella, suggesting that Ella has a more advanced understanding of the tasks presented. Dolphin Daisy sits in the middle of the group in terms of intelligence, showing a balanced mix of skills and learning potential. Dolphin Ella is not the least intelligent, indicating that she has surpassed at least one other dolphin in cognitive abilities. Finally, Dolphin Andy is less intelligent than Dolphin Daisy, suggesting Daisy's higher learning capacity in the colony's hierarchy.",
+        "sym_premises": "dolphin_Bella > dolphin_Andy \ndolphin_Charlie < dolphin_Ella \ndolphin_Daisy == 3 \ndolphin_Ella != 1 \ndolphin_Andy < dolphin_Daisy",
+        "nl_query": "Dolphin Ella is more intelligent than Dolphin Andy.",
+        "sym_query": "dolphin_Ella > dolphin_Andy",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\ndolphin_Andy = Function('dolphin_Andy', IntSort())\ndolphin_Bella = Function('dolphin_Bella', IntSort())\ndolphin_Charlie = Function('dolphin_Charlie', IntSort())\ndolphin_Daisy = Function('dolphin_Daisy', IntSort())\ndolphin_Ella = Function('dolphin_Ella', IntSort())\n\nobjects = [dolphin_Andy(), dolphin_Bella(), dolphin_Charlie(), dolphin_Daisy(), dolphin_Ella()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 5)\n\nfor i, j in combinations(range(5), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(dolphin_Bella() > dolphin_Andy())\nconstraints.append(dolphin_Charlie() < dolphin_Ella())\nconstraints.append(dolphin_Daisy() == 3)\nconstraints.append(dolphin_Ella() != 1)\nconstraints.append(dolphin_Andy() < dolphin_Daisy())\nconclusion = dolphin_Ella() > dolphin_Andy()\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    },
+    {
+        "id": "e2b30e69-07f7-4f50-804e-4414e8c7a74f",
+        "type": "Arrangement",
+        "context": "In a regional baking competition, four contestants are preparing their signature dishes. The dishes are ranked based on their taste, from the least appealing (1) to the most delicious (4). The judges' rankings ultimately decide the winner of the competition.",
+        "nl_premises": "The first contestant's dish is less appealing than the second contestant's dish, suggesting that the first contestant might need to improve their recipe. The third contestant's dish is more delicious than the first contestant's dish, indicating a higher level of culinary skill. The second contestant's dish is less appealing than the fourth contestant's dish, hinting that the fourth contestant might be a strong contender for the win. Furthermore, the fourth contestant's dish is more delicious than the third contestant's dish, solidifying their position as a top contender. Interestingly, the second contestant's dish is not ranked as the third most appealing, and the third contestant's dish is not the second least appealing, leaving room for speculation about their exact positions in the ranking.",
+        "sym_premises": "first_contestant_dish < second_contestant_dish \nthird_contestant_dish > first_contestant_dish \nsecond_contestant_dish < fourth_contestant_dish \nfourth_contestant_dish > third_contestant_dish \nsecond_contestant_dish != 3 \nthird_contestant_dish != 2",
+        "nl_query": "The fourth contestant's dish is the most delicious. ",
+        "sym_query": "fourth_contestant_dish == 4",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\nfirst_contestant_dish = Function('first_contestant_dish', IntSort())\nsecond_contestant_dish = Function('second_contestant_dish', IntSort())\nthird_contestant_dish = Function('third_contestant_dish', IntSort())\nfourth_contestant_dish = Function('fourth_contestant_dish', IntSort())\n\nobjects = [first_contestant_dish(), second_contestant_dish(), third_contestant_dish(), fourth_contestant_dish()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 4)\n\nfor i, j in combinations(range(4), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(first_contestant_dish() < second_contestant_dish())\nconstraints.append(third_contestant_dish() > first_contestant_dish())\nconstraints.append(second_contestant_dish() < fourth_contestant_dish())\nconstraints.append(fourth_contestant_dish() > third_contestant_dish())\nconstraints.append(second_contestant_dish() != 3)\nconstraints.append(third_contestant_dish() != 2)\nconclusion = fourth_contestant_dish() == 4\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    },
+    {
+        "id": "c9bc404d-88fa-4482-a69b-6b4580aa2e18",
+        "type": "Arrangement",
+        "context": "In a professional basketball team, four players stand out due to their varying heights. These players include the point guard, shooting guard, power forward, and center. The height of each player plays a significant role in their position and style of play on the court.",
+        "nl_premises": "The point guard is shorter than the shooting guard, suggesting a typical formation where the point guard, due to their shorter stature, is often faster and better at handling the ball. The center, typically the tallest player on the team, is indeed taller than the shooting guard. The power forward is taller than the point guard, possibly making them a key player for both offense and defense. The center, maintaining their towering presence, is also taller than the power forward. Interestingly, the shooting guard is taller than the power forward, which is not always the case, suggesting that this shooting guard may have an advantage in rebounding and blocking shots due to their height.",
+        "sym_premises": "point_guard < shooting_guard \ncenter > shooting_guard \npower_forward > point_guard \ncenter > power_forward \nshooting_guard > power_forward",
+        "nl_query": "The center is the tallest player on the team.",
+        "sym_query": "center == 4",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\npoint_guard = Function('point_guard', IntSort())\nshooting_guard = Function('shooting_guard', IntSort())\npower_forward = Function('power_forward', IntSort())\ncenter = Function('center', IntSort())\n\nobjects = [point_guard(), shooting_guard(), power_forward(), center()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 4)\n\nfor i, j in combinations(range(4), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(point_guard() < shooting_guard())\nconstraints.append(center() > shooting_guard())\nconstraints.append(power_forward() > point_guard())\nconstraints.append(center() > power_forward())\nconstraints.append(shooting_guard() > power_forward())\nconclusion = center() == 4\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    },
+    {
+        "id": "b7abce7f-406a-49cf-90e3-42afadfd38aa",
+        "type": "Arrangement",
+        "context": "In a small town, there are three mountains that attract tourists for their unique beauty. The mountains are ranked by height, from smallest to largest. The height of these mountains influences the difficulty of the climb, the views from the summit, and the type of flora and fauna that can be found at different altitudes.",
+        "nl_premises": "The first mountain is smaller than the second one, suggesting a progressive increase in height and possibly difficulty for climbers. The third mountain is larger than the second one, indicating it as the highest peak in the region, offering the most challenging climb and the most breathtaking views. It's also clarified that the third mountain is not the smallest, further confirming its status as the tallest peak.",
+        "sym_premises": "mountain_1 < mountain_2 \nmountain_3 > mountain_2 \nmountain_3 != 1",
+        "nl_query": "The third mountain is the tallest. ",
+        "sym_query": "mountain_3 == 3",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\nmountain_1 = Function('mountain_1', IntSort())\nmountain_2 = Function('mountain_2', IntSort())\nmountain_3 = Function('mountain_3', IntSort())\n\nobjects = [mountain_1(), mountain_2(), mountain_3()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 3)\n\nfor i, j in combinations(range(3), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(mountain_1() < mountain_2())\nconstraints.append(mountain_3() > mountain_2())\nconstraints.append(mountain_3() != 1)\nconclusion = mountain_3() == 3\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    },
+    {
+        "id": "ad249238-65e2-4064-a286-919e7e89e902",
+        "type": "Arrangement",
+        "context": "At a small town's annual fair, the organizers have arranged a contest to rank the three tallest sunflowers grown by the local gardeners. The sunflowers are ranked from 1 to 3, with 1 being the shortest and 3 being the tallest. The rankings are crucial in determining the prize distribution among the contestants. ",
+        "nl_premises": "The second sunflower is taller than the first, suggesting that it could be a strong contender for one of the top prizes. The third sunflower is shorter than the second, indicating that it might not be the tallest but still stands a chance to win a prize. Interestingly, the first and third sunflowers are not of the same height, indicating that the contest has a range of sunflower heights to consider for the prizes.",
+        "sym_premises": "second_sunflower > first_sunflower \nthird_sunflower < second_sunflower \nfirst_sunflower != third_sunflower",
+        "nl_query": "The second sunflower is the tallest among the three. ",
+        "sym_query": "second_sunflower == 3",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\nfirst_sunflower = Function('first_sunflower', IntSort())\nsecond_sunflower = Function('second_sunflower', IntSort())\nthird_sunflower = Function('third_sunflower', IntSort())\n\nobjects = [first_sunflower(), second_sunflower(), third_sunflower()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 3)\n\nfor i, j in combinations(range(3), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(second_sunflower() > first_sunflower())\nconstraints.append(third_sunflower() < second_sunflower())\nconstraints.append(first_sunflower() != third_sunflower())\nconclusion = second_sunflower() == 3\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    },
+    {
+        "id": "9e1776e3-40eb-40b6-970d-dc798c8a7f5c",
+        "type": "Arrangement",
+        "context": "In the Johnson family, there are three children: Emily, Michael, and Olivia. Their ages vary, with one being the youngest and another the oldest. The children's age differences significantly influence their roles and responsibilities within the family. ",
+        "nl_premises": "Based on the constraints, it's clear that Emily is younger than Michael, indicating that she might be the youngest or middle child. Michael, in turn, is younger than Olivia, suggesting that Olivia could be the oldest. These age differences influence their dynamics, with Emily often looking up to her older siblings for guidance, Michael playing the intermediary role, and Olivia typically taking on more responsibility as the eldest.",
+        "sym_premises": "child_Emily < child_Michael \nchild_Michael < child_Olivia",
+        "nl_query": "Olivia is the oldest child in the Johnson family.",
+        "sym_query": "child_Olivia == 3",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\nchild_Emily = Function('child_Emily', IntSort())\nchild_Michael = Function('child_Michael', IntSort())\nchild_Olivia = Function('child_Olivia', IntSort())\n\nobjects = [child_Emily(), child_Michael(), child_Olivia()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 3)\n\nfor i, j in combinations(range(3), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(child_Emily() < child_Michael())\nconstraints.append(child_Michael() < child_Olivia())\nconclusion = child_Olivia() == 3\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    },
+    {
+        "id": "b598ffeb-c8f4-4dc9-92f1-6de9b12dc855",
+        "type": "Arrangement",
+        "context": "At a local basketball club, three young players, John, Mike, and Sam, are known for their varying heights. They often play key roles in the team's strategy due to their height differences. The players are ranked from 1 to 3, with 1 being the shortest and 3 being the tallest.",
+        "nl_premises": "According to the coach's notes, player John is taller than player Mike, which gives him an advantage in rebounding. Player Sam, on the other hand, is shorter than John, making him quicker on the court. Interestingly, Mike is shorter than Sam, which allows him to excel at dribbling and evading taller opponents. These height differences contribute to the team's diverse skills and tactics on the basketball court.",
+        "sym_premises": "player_John > player_Mike \nplayer_Sam < player_John \nplayer_Mike < player_Sam",
+        "nl_query": "Player John is the tallest among the three players.",
+        "sym_query": "player_John == 3",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\nplayer_John = Function('player_John', IntSort())\nplayer_Mike = Function('player_Mike', IntSort())\nplayer_Sam = Function('player_Sam', IntSort())\n\nobjects = [player_John(), player_Mike(), player_Sam()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 3)\n\nfor i, j in combinations(range(3), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(player_John() > player_Mike())\nconstraints.append(player_Sam() < player_John())\nconstraints.append(player_Mike() < player_Sam())\nconclusion = player_John() == 3\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    },
+    {
+        "id": "e3d39160-bfb9-47d7-a1d2-4c82d02bf9fd",
+        "type": "Arrangement",
+        "context": "In a high school basketball team, three players are known for their varying heights, which greatly influence their roles on the court. The players are identified from shortest to tallest, providing an overview of the physical dynamics within the team. ",
+        "nl_premises": "The first player is shorter than the second player, which suggests a possible difference in their playing positions, with the first player potentially playing as a point guard and the second as a shooting guard or small forward. The second player is shorter than the third player, indicating that the third player might be the team's center or power forward, known for their height advantage in rebounding and defense. It is also established that the second player is not the shortest, solidifying their role in a position that requires a balance of agility and height.",
+        "sym_premises": "player_one < player_two \nplayer_two < player_three \nplayer_two != 1",
+        "nl_query": "The third player is the tallest. ",
+        "sym_query": "player_three == 3",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\nplayer_one = Function('player_one', IntSort())\nplayer_two = Function('player_two', IntSort())\nplayer_three = Function('player_three', IntSort())\n\nobjects = [player_one(), player_two(), player_three()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 3)\n\nfor i, j in combinations(range(3), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(player_one() < player_two())\nconstraints.append(player_two() < player_three())\nconstraints.append(player_two() != 1)\nconclusion = player_three() == 3\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    },
+    {
+        "id": "86a75f6f-d719-4f8c-abf8-0c8191b491cd",
+        "type": "Arrangement",
+        "context": "In a regional basketball league, three players, Tom, Jerry, and Spike, are known for their varying heights which significantly influence their roles and performances on the court. The players are categorized from shortest to tallest. ",
+        "nl_premises": "Player Jerry is shorter than player Tom, suggesting that Jerry might be a guard, while Tom could be playing a forward position. Player Spike is taller than Jerry, indicating that Spike could be the team's center. However, Tom is not the tallest player, which suggests that Spike could be taller. Lastly, Spike is not the shortest player, confirming his role as a key player in rebounds and blocks. These height differences play a crucial role in determining the team's strategy and player positions during games.",
+        "sym_premises": "player_Jerry < player_Tom \nplayer_Spike > player_Jerry \nplayer_Tom != 3 \nplayer_Spike != 1",
+        "nl_query": "Player Tom is taller than player Jerry.",
+        "sym_query": "player_Tom > player_Jerry",
+        "label": "True",
+        "z3_program": "from z3 import *\nfrom itertools import combinations\n\nconstraints = []\n\nplayer_Tom = Function('player_Tom', IntSort())\nplayer_Jerry = Function('player_Jerry', IntSort())\nplayer_Spike = Function('player_Spike', IntSort())\n\nobjects = [player_Tom(), player_Jerry(), player_Spike()]\n\nfor obj in objects:\n\tconstraints.append(obj >= 1)\n\tconstraints.append(obj <= 3)\n\nfor i, j in combinations(range(3), 2):\n\tconstraints.append(objects[i] != objects[j])\n\nconstraints.append(player_Jerry() < player_Tom())\nconstraints.append(player_Spike() > player_Jerry())\nconstraints.append(player_Tom() != 3)\nconstraints.append(player_Spike() != 1)\nconclusion = player_Tom() > player_Jerry()\n\ndef is_valid(constraints, conclusion):\n\tsolver = Solver()\n\tfor c in constraints: solver.add(constraints)\n\tsolver.add(Not(conclusion))\n\treturn solver.check() == unsat\n\nans = is_valid(constraints, conclusion)"
+    }
+]

@@ -1,0 +1,14 @@
+Domain: 
+1: Shortest 
+3: Tallest 
+
+Variables: 
+var_1 [1, 2, 3]
+var_2 [1, 2, 3]
+var_3 [1, 2, 3]
+
+Constraints: 
+var_2 < var_1 ::: var_2 is shorter than var_1 
+var_3 > var_2 ::: var_3 is taller than var_2
+var_1 != 3 ::: var_1 is not the tallest
+var_3 != 1 ::: var_3 is not the shortest
