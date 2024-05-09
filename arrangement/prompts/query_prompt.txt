@@ -1,15 +1,13 @@
-Task: You are creating a statement that is either True or False given the context of an arrangement problem. 
+Task: Crate a statement that is either True or False given the context of an arrangement problem. 
 Inputs: 
 1) A context about the arrangement of several variables. 
 2) The meaning of the variables. 
 3) All solutions to the problem. 
+4) Whether the generated statement should be True or False
 
 Analyze the context, premises, and solutions to generate one True or False question. Write the solutions in english and in logic language.
 
 When generating the queries in logic form, be sure to follow the definitions provided. 
-
-For a correct answer, the answer should hold true for all solutions. 
-For an incorrect answer, the answer only needs to be not true for one solution.
 
 Here are some examples: 
 -------
@@ -22,83 +20,82 @@ Domain:
 7: Largest
 
 Definitions:
-position(1): Size of first celestial body 
-position(2): Size of second celestial body 
-position(3): Size of third celestial body 
-position(4): Size of fourth celestial body 
-position(5): Size of fifth celestial body 
-position(6): Size of sixth celestial body 
-position(7): Size of seventh celestial body
+var_1: first_celestial_body 
+var_2: second_celestial_body 
+var_3: third_celestial_body
+var_4: fourth_celestial_body
+var_5: fifth_celestial_body
+var_6: sixth_celestial_body 
+var_7: seventh_celestial_body
 
 Solution #1:
-Size of third celestial body: 2
-Size of fourth celestial body: 1
-Size of fifth celestial body: 5
-Size of sixth celestial body: 7
-Size of seventh celestial body: 3
-Size of first celestial body: 4
-Size of second celestial body: 6
+third_celestial_body: 2
+fourth_celestial_body: 1
+fifth_celestial_body: 5 
+sixth_celestial_body: 7 
+seventh_celestial_body: 3 
+first_celestial_body: 4
+second_celestial_body: 6
 
 Solution #2:
-Size of second celestial body: 6
-Size of third celestial body: 1
-Size of fourth celestial body: 2
-Size of fifth celestial body: 5
-Size of sixth celestial body: 7
-Size of seventh celestial body: 3
-Size of first celestial body: 4
+second_celestial_body: 6
+third_celestial_body: 1
+fourth_celestial_body: 2
+fifth_celestial_body: 5
+sixth_celestial_body: 7
+seventh_celestial_body: 3
+first_celestial_body: 4
+
+Label: True
 
 Output: 
 Statement (English): The second celestial body is larger than the seventh celestial body. 
 
-Statement (Logic): position(2) > position(7)
+Statement (Logic): second_celestial_body > seventh_celestial_body
 
 Analysis: 
-The statement is correct because in solution #1 and solution #2, the size of the second celestial body > the size of the seventh celestial body.
-
-To generate an incorrect query, find at least one solution where it is not satisfied. 
-To generate a correct query, make sure it is correct for ALL solutions. 
+The statement is correct because in solution #1 and solution #2, second_celestial_body > seventh_celestial_body.
 
 Context: In a small town fair, four different varieties of pumpkins are on display for the annual pumpkin contest, each distinct in size. The sizes are ranked from 1 to 4, with 1 being the smallest and 4 the largest. 
 Premises: The second variety is larger than the third, suggesting a more mature growth or a different species entirely. The first variety is smaller than the fourth, possibly indicating that the fourth variety is a late-season pumpkin, known for their larger sizes. Interestingly, the second variety is not the smallest, indicating a middle-range size, while the fourth variety, contrary to expectations, is not the largest. This fascinating array of pumpkins, each unique in size, draws the attention of both the townsfolk and the judges, setting the stage for an exciting contest. 
+
 Domain:
 1: Smallest
 4: Largest
 
 Definitions: 
-position(1): Size of first variety of pumpkin
-position(2): Size of second variety of pumpkin
-position(3): Size of third variety of pumpkin
-position(4): Size of fourth variety of pumpkin
+var_1: first_pumpkin_variety
+var_2: second_pumpkin_variety
+var_3: third_pumpkin_variety
+var_4: fourth_pumpkin_variety
 
 Solution #1:
-Size of the second variety of pumpkin: 4
-Size of the third variety of pumpkin: 2
-Size of the fourth variety of pumpkin: 3
-Size of the first variety of pumpkin: 1
+second_pumpkin_variety: 4
+third_pumpkin_variety: 2
+fourth_pumpkin_variety: 3
+first_pumpkin_variety: 1
 
 Solution #2:
-Size of the second variety of pumpkin: 4
-Size of the third variety of pumpkin: 1
-Size of the fourth variety of pumpkin: 3
-Size of the first variety of pumpkin: 2
+second_pumpkin_variety: 4
+third_pumpkin_variety: 1
+fourth_pumpkin_variety: 3
+first_pumpkin_variety: 2
 
 Solution #3:
-Size of the second variety of pumpkin: 4
-Size of the third variety of pumpkin: 3
-Size of the fourth variety of pumpkin: 2
-Size of the first variety of pumpkin: 1
+second_pumpkin_variety: 4
+third_pumpkin_variety: 3
+fourth_pumpkin_variety: 2
+first_pumpkin_variety: 1
+
+Label: False
 
 Output: 
 Statement (English): The first variety of pumpkin is the smallest. 
 
-Statement (Logic): position(1) == 1
+Statement (Logic): first_pumpkin_variety == 1
 
 Analysis: 
-The statement is incorrect because in solution #2, the size of the first variety of pumpkin (2) is not the smallest. 
-
-To generate an incorrect query, find at least one solution where it is not satisfied. 
-To generate a correct query, make sure it is correct for ALL solutions.
+The statement is incorrect because in solution #2, first_pumpkin_variety (2) is not the smallest (1). 
 ------
 Input: 
 [[TEMPLATE]]
