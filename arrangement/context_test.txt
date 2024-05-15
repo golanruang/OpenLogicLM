@@ -1,23 +1,27 @@
-Context: In a regional basketball league, three players, Tom, Jerry, and Spike, are known for their varying heights which significantly influence their roles and performances on the court. The players are categorized from shortest to tallest. 
+Context: In a prestigious international art auction, five unique sculptures are being ranked based on their size from smallest to largest. These sculptures, each crafted by renowned artists, vary in size and complexity, adding to the intrigue and suspense of the auction. 
 
-Premises: Player Jerry is shorter than player Tom, suggesting that Jerry might be a guard, while Tom could be playing a forward position. Player Spike is taller than Jerry, indicating that Spike could be the team's center. However, Tom is not the tallest player, which suggests that Spike could be taller. Lastly, Spike is not the shortest player, confirming his role as a key player in rebounds and blocks. These height differences play a crucial role in determining the team's strategy and player positions during games.
+Premises: The constraints reveal the relative sizes of the sculptures: The first sculpture is smaller than the second, suggesting it may be a delicate piece of miniature art. The second sculpture is smaller than the third - perhaps a medium-sized work of art that is still manageable to transport. The third sculpture is smaller than the fourth, signaling a shift towards larger, more imposing pieces. Finally, the fourth sculpture is smaller than the fifth, which is presumably the grandest and most commanding piece in the collection. These sizes not only affect the spectacle of the auction but also the potential value of these exquisite works of art.
 
-Domain: 
-1: Shortest 
-3: Tallest 
+Domain:
+1: Smallest
+5: Largest
 
-Variables: 
-player_Tom [1, 2, 3]
-player_Jerry [1, 2, 3]
-player_Spike [1, 2, 3]
+Variables:
+first_sculpture [1, 2, 3, 4, 5]
+second_sculpture [1, 2, 3, 4, 5]
+third_sculpture [1, 2, 3, 4, 5]
+fourth_sculpture [1, 2, 3, 4, 5]
+fifth_sculpture [1, 2, 3, 4, 5]
 
-Constraints: 
-player_Jerry < player_Tom ::: player_Jerry is shorter than player_Tom
-player_Spike > player_Jerry ::: player_Spike is taller than player_Jerry
-player_Tom != 3 ::: player_Tom is not the tallest
-player_Spike != 1 ::: player_Spike is not the shortest
+Constraints:
+first_sculpture < second_sculpture ::: first_sculpture is smaller than second_sculpture.
+second_sculpture < third_sculpture ::: second_sculpture is smaller than third_sculpture.
+third_sculpture < fourth_sculpture ::: third_sculpture is smaller than fourth_sculpture.
+fourth_sculpture < fifth_sculpture ::: fourth_sculpture is smaller than fifth_sculpture.
 
 Definitions:
-var_1: player_Tom
-var_2: player_Jerry
-var_3: player_Spike
+var_1: first_sculpture
+var_2: second_sculpture
+var_3: third_sculpture
+var_4: fourth_sculpture
+var_5: fifth_sculpture

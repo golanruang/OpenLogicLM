@@ -1,7 +1,6 @@
 Task description: Given a problem template, provide a real world context and translate the constraints into premises. 
 1. Assign meanings to each variable
 2. Create premises by describing how the variables are related to each other using the provided domain. 
-3. Be creative with the translation of the context and premises. 
 
 Here are some examples: 
 ------

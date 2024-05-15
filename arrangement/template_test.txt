@@ -1,14 +1,16 @@
-Domain: 
-1: Shortest 
-3: Tallest 
+Domain:
+1: Smallest
+5: Largest
 
-Variables: 
-var_1 [1, 2, 3]
-var_2 [1, 2, 3]
-var_3 [1, 2, 3]
+Variables:
+var_1 [1, 2, 3, 4, 5]
+var_2 [1, 2, 3, 4, 5]
+var_3 [1, 2, 3, 4, 5]
+var_4 [1, 2, 3, 4, 5]
+var_5 [1, 2, 3, 4, 5]
 
-Constraints: 
-var_2 < var_1 ::: var_2 is shorter than var_1 
-var_3 > var_2 ::: var_3 is taller than var_2
-var_1 != 3 ::: var_1 is not the tallest
-var_3 != 1 ::: var_3 is not the shortest
+Constraints:
+var_1 < var_2 ::: var_1 is smaller than var_2.
+var_2 < var_3 ::: var_2 is smaller than var_3.
+var_3 < var_4 ::: var_3 is smaller than var_4.
+var_4 < var_5 ::: var_4 is smaller than var_5.

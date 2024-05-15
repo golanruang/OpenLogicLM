@@ -9,7 +9,17 @@ Analyze the context, premises, and solutions to generate one True or False quest
 
 When generating the queries in logic form, be sure to follow the definitions provided. 
 
-These are the possible logic operations to define a relationship: >, <, >=, <=, ==, !=
+These are six query types: >, <, ==, !=, >=, <=
+
+Query type: 
+1: > 
+2: < 
+3: ==
+4: !=
+5: >=
+6: <=
+
+Depending on the given query type, generate the corresponding query.
 
 Here are some examples: 
 -------
@@ -50,55 +60,140 @@ first_celestial_body: 4
 
 Label: True
 
+Query Type: _ # For the purposes of example, we leave query type blank.
+
 Output: 
+Query Type: 1 (>) 
 Statement (English): The second celestial body is larger than the seventh celestial body. 
 
 Statement (Logic): second_celestial_body > seventh_celestial_body
 
-Analysis: 
-The statement is correct because in solution #1 and solution #2, second_celestial_body > seventh_celestial_body.
+Analysis: The statement is correct because in solution #1 and solution #2, second_celestial_body > seventh_celestial_body.
 
+Query Type: 2 (<)
+Statement (English): The third celestial body is smaller than the fifth celestial body. 
+
+Statement (Logic): third_celestial_body < fifth_celestial_body
+
+Analysis: This statement is correct because in solution #1 and solution #2, third_celestial_body < fifth_celestial_body
+
+Query Type: 3 (==) 
+Statement (English): The sixth celestial body is the largest celestial body.
+
+Statement (Logic): sixth_celestial_body == 7
+
+Analysis: This statement is correct because in solution #1 and solution #2, sixth_celestial_body == 7.
+
+Query Type: 4 (!=)
+Statement (English): The first celestial body is not the second smallest celestial body.
+
+Statement (Logic): first_celestial_body != 2
+
+Analysis: This statement is correct because in solution #1 and solution #2, first_celestial_body != 2.
+
+Query Type: 5 (>=)
+Statement (English): The fourth celestial body is larger than or equal to the smallest celestial body.
+
+Statement (Logic): fourth_celestial_body >= 1
+
+Analysis: This statement is correct because in solution #1 and solution #2, fourth_celestial_body >= 1.
+
+Query Type: 6 (<=)
+Statement (English): The third celestial body is smaller than or equal to the second smallest celestial body.
+
+Statement (Logic): third_celestial_body <= 2
+
+Analysis: This statement is correct because in solution #1 and solution #2, third_celestial_body <= 2.
+
+Input: 
 Context: In a small town fair, four different varieties of pumpkins are on display for the annual pumpkin contest, each distinct in size. The sizes are ranked from 1 to 4, with 1 being the smallest and 4 the largest. 
 Premises: The second variety is larger than the third, suggesting a more mature growth or a different species entirely. The first variety is smaller than the fourth, possibly indicating that the fourth variety is a late-season pumpkin, known for their larger sizes. Interestingly, the second variety is not the smallest, indicating a middle-range size, while the fourth variety, contrary to expectations, is not the largest. This fascinating array of pumpkins, each unique in size, draws the attention of both the townsfolk and the judges, setting the stage for an exciting contest. 
 
-Domain:
-1: Smallest
-4: Largest
+Context: In a corporate hierarchy of an international company, six roles are identified within the organization's structure, from the lowest position to the highest rank. The ranking of each role is essential to establish the decision-making process, lines of command, and determine the distribution of responsibilities.
+Premises: Role E is higher in rank than Role D, indicating that Role E might hold more responsibility or authority within the company. Role A is lower in rank than Role C, signifying that Role C might supervise or manage Role A. Role B has been identified as the fourth highest in the structure, potentially a senior management role. Meanwhile, Role F holds the second lowest position, perhaps an entry-level role or a recent recruit. Role C is higher in rank than Role B, suggesting that Role C might be part of the company's top executives, while Role D is lower than Role F, denoting that Role D is possibly an intern or in a similar category.
 
-Definitions: 
-var_1: first_pumpkin_variety
-var_2: second_pumpkin_variety
-var_3: third_pumpkin_variety
-var_4: fourth_pumpkin_variety
+Domain:
+1: Lowest
+6: Highest
+
+Definitions:
+var_1: role_A
+var_2: role_B
+var_3: role_C
+var_4: role_D
+var_5: role_E
+var_6: role_F
 
 Solution #1:
-second_pumpkin_variety: 4
-third_pumpkin_variety: 2
-fourth_pumpkin_variety: 3
-first_pumpkin_variety: 1
-
+role_A: 5
+role_C: 6
+role_E: 3
+role_D: 1
+role_B: 4
+role_F: 2
 Solution #2:
-second_pumpkin_variety: 4
-third_pumpkin_variety: 1
-fourth_pumpkin_variety: 3
-first_pumpkin_variety: 2
-
+role_A: 3
+role_F: 2
+role_C: 5
+role_E: 6
+role_B: 4
+role_D: 1
 Solution #3:
-second_pumpkin_variety: 4
-third_pumpkin_variety: 3
-fourth_pumpkin_variety: 2
-first_pumpkin_variety: 1
+role_A: 3
+role_F: 2
+role_C: 6
+role_E: 5
+role_B: 4
+role_D: 1
 
 Label: False
 
+Query Type: _ # For the purposes of example, we leave query type blank.
+
 Output: 
-Statement (English): The first variety of pumpkin is the smallest. 
+Query Type: 1 (>)
+Statement (English): Role F is higher than Role A. 
 
-Statement (Logic): first_pumpkin_variety == 1
+Statement (Logic): role_F > role_A 
 
-Analysis: 
-The statement is incorrect because in solution #2, first_pumpkin_variety (2) is not the smallest (1). 
+Analysis: This statement is incorrect because in solution #1, solution #2, and solution #3, role_F <= role_A.
+
+Query Type: 2 (<)
+Statement (English): Role B is lower than Role E 
+
+Statement (Logic): role_B < role_E
+
+Analysis: This statement is incorrect because in solution #1, role_B >= role_E.
+
+Query Type: 3 (==)
+Statement (English): Role A is the third lowest role. 
+
+Statement (Logic): role_A == 3 
+
+Analysis: This statement is incorrect because in solution #1, role_A != 3.
+
+Query Type: 4 (!=)
+Statement (English): Role D is not the lowest role. 
+
+Statement (Logic): role_D != 2
+
+Analysis: This statement is incorrect because in solution #1, solution #2, and solution #3, role_D == 2.
+
+Query Type: 5 (>=)
+Statement (English): Role E is higher than or equal to Role C.
+
+Statement (Logic): role_E >= role_C
+
+Analysis: This statement is incorrect because in solution #1 and solution #3, role_E < role_C.
+
+Query Type: 6 (<=)
+Statement (English): Role F is lower than or equal to the lowest role. 
+
+Statement (Logic): role_F <= 1
+
+Analysis: This statement is incorrect because in solution #1, solution #2, and solution #3, role_F > 1. 
 ------
+Follow the exact syntax as the outputs above. Generate only one output depending on the query type. 
 Input: 
 [[TEMPLATE]]
 

@@ -17,15 +17,12 @@ from datetime import date
 class Arrangement_Pipeline:
     def __init__(self, args):
         self.num_data = args.num_of_examples
-        
         self.save_path = args.save_path
-
-        self.datapoints = []
-        self.data_per_template = 1 # for each template, generate n problems
-
         self.openai_api = OpenAIModel(api_key, args.model_name, args.stop_words, args.max_new_tokens)
-        
         self.solutions = []
+        
+        self.lower_num_variables = args.lower_bound_num_variables
+        self.upper_num_variables = args.upper_bound_num_variables
 
     def generate_template(self, n):
         template_path = "prompts/template_prompt.txt"
@@ -48,7 +45,7 @@ class Arrangement_Pipeline:
         file = open(file_path, 'r')
         prompt = file.read().replace('[[TEMPLATE]]', template)
 
-        gpt_output = self.openai_api.generate(prompt, temperature=0.7, top_p=0.8)
+        gpt_output = self.openai_api.generate(prompt, temperature=0.8)
 
         gpt_output=gpt_output.replace("Output:", "").strip()
         
@@ -137,6 +134,10 @@ class Arrangement_Pipeline:
                 solutions_input += f"{definitions[var]}: {pos}\n"
         
         solutions_input += f"\nLabel: {label}"
+        
+        query_type = random.randint(1, 6)
+        
+        solutions_input += f"\nQuery Type: {query_type}"
     
         return solutions_input      
     
@@ -167,11 +168,13 @@ class Arrangement_Pipeline:
         s, e = lower_context.find('domain:'), lower_context.find('definitions:')
         return context[s:e].lstrip().strip()
     
-    def generate_data(self, num_variables, label):
+    def generate_data(self):
         query_path = 'prompts/query_prompt.txt'
         with open(query_path, 'r') as file: query_prompt = file.read()
         
         for _ in range(self.num_data):
+            num_variables = random.randint(self.lower_num_variables, self.upper_num_variables)
+            label = random.choice([True, False])
             while True: 
                 # generate template until you get a template 
                 print(f"GENERATING TEMPLATE...")
@@ -349,17 +352,21 @@ var_5 > var_3 ::: var_5 is more important than var_3.
         with open(f, 'w') as file: 
             json.dump(data, file, indent=4)
 
-def parse_args():
+def parse_args(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_of_examples', type=int, default=5)
     parser.add_argument('--save_path', type=str, default='./arrangement_data')
     parser.add_argument('--model_name', type=str, default='text-davinci-003')
     parser.add_argument('--stop_words', type=str, default='------')
     parser.add_argument('--max_new_tokens', type=int, default=1024)
-    parser.add_argument('--num_variables', type=int, default=5)
-    parser.add_argument('--label', type=bool, default=True)
+    parser.add_argument('--lower_bound_num_variables', type=int, default=3)
+    parser.add_argument('--upper_bound_num_variables', type=int, default=8)
     
-    args = parser.parse_args()
+    if args is None:
+        args = parser.parse_args()  # Parse from command line
+    else:
+        args = parser.parse_args(args)  # Parse from given list
+    
     return args
 
 if __name__ == '__main__':
@@ -369,4 +376,4 @@ if __name__ == '__main__':
     path = './gpt_generated_data/data.json'
 
     a = Arrangement_Pipeline(args)
-    a.generate_data(args.num_variables, args.label)
+    a.generate_data()
