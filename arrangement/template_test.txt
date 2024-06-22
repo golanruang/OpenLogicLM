@@ -1,16 +1,21 @@
 Domain:
 1: Smallest
-5: Largest
+6: Largest
 
 Variables:
-var_1 [1, 2, 3, 4, 5]
-var_2 [1, 2, 3, 4, 5]
-var_3 [1, 2, 3, 4, 5]
-var_4 [1, 2, 3, 4, 5]
-var_5 [1, 2, 3, 4, 5]
+var_1 [1, 2, 3, 4, 5, 6]
+var_2 [1, 2, 3, 4, 5, 6]
+var_3 [1, 2, 3, 4, 5, 6]
+var_4 [1, 2, 3, 4, 5, 6]
+var_5 [1, 2, 3, 4, 5, 6]
+var_6 [1, 2, 3, 4, 5, 6]
 
 Constraints:
-var_1 < var_2 ::: var_1 is smaller than var_2.
-var_2 < var_3 ::: var_2 is smaller than var_3.
-var_3 < var_4 ::: var_3 is smaller than var_4.
-var_4 < var_5 ::: var_4 is smaller than var_5.
+var_1 < var_2 ::: var_1 is smaller than var_2
+var_2 < var_3 ::: var_2 is smaller than var_3
+var_3 > var_4 ::: var_3 is larger than var_4
+var_4 > var_5 ::: var_4 is larger than var_5
+var_6 < var_5 ::: var_6 is smaller than var_5
+var_6 > var_1 ::: var_6 is larger than var_1
+var_2 != 4 ::: var_2 is not the fourth largest
+var_5 != 2 ::: var_5 is not the second smallest

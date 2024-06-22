@@ -1,1 +1,1 @@
-first_sculpture > second_sculpture
+third_flower >= fourth_flower

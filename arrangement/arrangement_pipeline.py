@@ -12,7 +12,7 @@ import uuid
 import argparse
 import random
 
-from datetime import date
+from datetime import date, datetime
 
 class Arrangement_Pipeline:
     def __init__(self, args):
@@ -374,6 +374,9 @@ if __name__ == '__main__':
     args.model_name = 'gpt-4'
     args.api_key = api_key
     path = './gpt_generated_data/data.json'
-
+    
     a = Arrangement_Pipeline(args)
+    start = datetime.now() 
     a.generate_data()
+    end = datetime.now() 
+    print(f"time elapsed: {end - start}")
